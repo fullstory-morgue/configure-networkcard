@@ -1,0 +1,186 @@
+netcardconfig-kanotix (0.6.2) unstable; urgency=low
+
+  * improve packaging.
+  * fix lintian errors.
+  * tag as unstable again.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 30 Jul 2005 16:33:13 +0200
+
+netcardconfig-kanotix (0.6.1) experimental; urgency=low
+
+  * quote where appropriate (thanks to bfree). 
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue,  5 Jul 2005 00:26:36 +0200
+
+netcardconfig-kanotix (0.6) experimental; urgency=low
+
+  * switch to kanotix-su.
+  * re- indent.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri,  1 Jul 2005 15:53:06 +0200
+
+netcardconfig-kanotix (0.5.26) experimental; urgency=low
+
+  * add wlan configuration interface (contributed by Niall Walsh.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri,  1 Jul 2005 03:11:23 +0200
+
+netcardconfig-kanotix (0.5.25) unstable; urgency=low
+
+  * Non Maintainer Upload (NMU)
+  * Improve naming of devices for non-german users.
+
+ -- Kel Modderman <kelrin@tpg.com.au>  Tue, 21 Jun 2005 15:02:10 +1000
+
+netcardconfig-kanotix (0.5.24) unstable; urgency=low
+
+  * fix dependencies. 
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 24 Mar 2005 02:42:30 +0100
+
+netcardconfig-kanotix (0.5.23) unstable; urgency=low
+
+  * synch with Knoppix 3.8.
+    - improve ethernet/ wlan detection.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 22 Mar 2005 18:13:48 +0100
+
+netcardconfig-kanotix (0.5-22) unstable; urgency=low
+
+  * fix hd-install. 
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 17 Dec 2004 15:36:49 +0100
+
+netcardconfig-kanotix (0.5-21) unstable; urgency=low
+
+  * remove gnome legacy support. 
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 16 Dec 2004 22:49:56 +0100
+
+netcardconfig-kanotix (0.5-20) unstable; urgency=low
+
+  * Forked for Kanotix XDG compatibility.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 12 Dec 2004 21:30:57 +0100
+
+netcardconfig-knoppix (0.5-20) unstable; urgency=low
+
+  * Fixed shell variable error
+
+ -- root <knopper@linuxtag.net>  Wed,  1 Sep 2004 14:21:57 +0200
+
+netcardconfig-knoppix (0.5-19) unstable; urgency=low
+
+  * Remove card numbers, just print "Wireless" or "LAN"
+
+ -- root <knopper@linuxtag.net>  Wed,  1 Sep 2004 01:25:08 +0200
+
+netcardconfig-knoppix (0.5-18) unstable; urgency=low
+
+  * Extract numbers using extended bash pattern replacements (now all network
+    devices should show up in the list)
+
+ -- root <knopper@linuxtag.net>  Sat, 28 Aug 2004 17:40:38 +0200
+
+netcardconfig-knoppix (0.5-17) unstable; urgency=low
+
+  * Set up device before dhcp
+
+ -- root <knopper@linuxtag.net>  Fri, 13 Aug 2004 05:02:36 +0200
+
+netcardconfig-knoppix (0.5-16) unstable; urgency=low
+
+  * Fixed "missing broadcast field" problem.
+
+ -- root <knopper@linuxtag.net>  Sun, 15 Feb 2004 20:51:19 +0100
+
+netcardconfig-knoppix (0.5-15) unstable; urgency=low
+
+  * wlan-ng devices are not eth*, but wlan*
+
+ -- root <knopper@linuxtag.net>  Wed, 15 Jan 2003 16:50:28 +0100
+
+netcardconfig-knoppix (0.5-14) unstable; urgency=low
+
+  * Added spanish messages by Sergio Gonzalez <sergio.gonzalez@hispalinux.es>, Luis Llorente <luis.llorente@hispalinux.es>
+
+ -- root <knopper@linuxtag.net>  Fri,  6 Dec 2002 19:24:20 +0100
+
+netcardconfig-knoppix (0.5-13) unstable; urgency=low
+
+  * Add dhcp entry to /etc/network/interfaces
+
+ -- root <knopper@linuxtag.net>  Wed,  6 Nov 2002 23:27:49 +0100
+
+netcardconfig-knoppix (0.5-12) unstable; urgency=low
+
+  * Autostart wlcardconfig in case of a wireless card
+
+ -- root <knopper@linuxtag.net>  Wed, 18 Sep 2002 19:31:50 +0200
+
+netcardconfig-knoppix (0.5-11) unstable; urgency=low
+
+  * Removed duplicate netcard chooser (cut&paste typo)
+
+ -- root <knopper@linuxtag.net>  Wed, 11 Sep 2002 00:11:10 +0200
+
+netcardconfig-knoppix (0.5-10) unstable; urgency=low
+
+  * Don't add a default gateway if none given.
+
+ -- root <knopper@linuxtag.net>  Mon,  9 Sep 2002 22:22:18 +0200
+
+netcardconfig-knoppix (0.5-9) unstable; urgency=low
+
+  * Display error message if no network cards found
+
+ -- root <knopper@linuxtag.net>  Fri, 23 Aug 2002 15:29:28 +0200
+
+netcardconfig-knoppix (0.5-8) unstable; urgency=low
+
+  * kill pump before adding static routes
+
+ -- root <knopper@linuxtag.net>  Wed, 21 Aug 2002 15:50:22 +0200
+
+netcardconfig-knoppix (0.5-7) unstable; urgency=low
+
+  * Corrected size of DHCP requester
+
+ -- root <knopper@linuxtag.net>  Mon,  5 Aug 2002 17:23:27 +0200
+
+netcardconfig-knoppix (0.5-6) unstable; urgency=low
+
+  * Replaced gdialog by Xdialog
+
+ -- root <knopper@linuxtag.net>  Sun, 28 Jul 2002 03:46:40 +0200
+
+netcardconfig-knoppix (0.5-5) unstable; urgency=low
+
+  * Added "auto" configuration.
+
+ -- root <knopper@linuxtag.net>  Thu,  4 Jul 2002 21:02:16 +0200
+
+netcardconfig-knoppix (0.5-4) unstable; urgency=low
+
+  * Moved netcardconfig into KDE submenu
+
+ -- root <knopper@linuxtag.net>  Sun, 12 May 2002 22:55:49 +0200
+
+netcardconfig-knoppix (0.5-3) unstable; urgency=low
+
+  * Added support for tokenring (tr) devices
+
+ -- root <knopper@linuxtag.net>  Sun, 12 May 2002 22:47:52 +0200
+
+netcardconfig-knoppix (0.5-2) unstable; urgency=low
+
+  * Use pump instead of dhcpcd
+  * Added device selector
+
+ -- root <knopper@linuxtag.net>  Mon,  8 Apr 2002 00:03:18 +0200
+
+netcardconfig-knoppix (0.5-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Klaus Knopper <knoppix@knopper.net>  Mon,  4 Jun 2001 00:24:42 +0200

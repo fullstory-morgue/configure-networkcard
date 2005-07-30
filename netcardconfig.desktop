@@ -1,0 +1,9 @@
+[Desktop Entry]
+Comment[de]=Netzwerkkarte konfigurieren
+Comment[es]=Configuración de la tarjeta de red
+Exec=/usr/sbin/netcardconfig
+Icon=netcardconfig
+Name[de]=Netzwerkkarte konfigurieren
+Name[es]=Configuración de la tarjeta de red
+Name=Network card configuration
+Type=Application
