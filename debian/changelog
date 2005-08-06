@@ -1,3 +1,9 @@
+netcardconfig-kanotix (0.6.3) unstable; urgency=low
+
+  * fix dependencies (ethtool, wireless-tools).
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat,  6 Aug 2005 12:35:38 +0200
+
 netcardconfig-kanotix (0.6.2) unstable; urgency=low
 
   * improve packaging.
