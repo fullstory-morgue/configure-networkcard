@@ -49,9 +49,7 @@ writeiwline() {
 		fi
 	fi
 
-	if [ -n "$RALINK" ]; then
-		IWPREUPLINE="$IWPREUPLINE pre-up /sbin/ifconfig $DV up\n"
-	fi
+	[ -d /sys/module/rt2?00/ ] && IWPREUPLINE="$IWPREUPLINE pre-up /sbin/ifconfig $DV up\n"
 
 	if [ -n "$IWCONFIG" ]; then 
 		IWPREUPLINE="$IWPREUPLINE iwconfig $IWCONFIG\n"
@@ -258,8 +256,6 @@ configiface() {
 	# wireless config
 	WLDEVICE="$(LANG=C LC_MESSAGEWS=C iwconfig $DV 2>/dev/null | awk '/802\.11|READY|ESSID/{print $1}')"
 	WLDEVICECOUNT="$(LANG=C LC_MESSAGEWS=C iwconfig $DV 2>/dev/null | wc -l)"
-	[ -d /sys/module/rt2?00/ ] && RALINK="Y"
-
 	if [ -n "$WLDEVICE" ] && $DIALOG --yesno "$MESSAGE13" 8 45; then
 		ESSID=""
 		NWID=""
