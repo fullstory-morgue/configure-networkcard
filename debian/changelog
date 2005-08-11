@@ -1,3 +1,10 @@
+netcardconfig-kanotix (0.6.4) unstable; urgency=low
+
+  [ Niall Walsh ]
+  * fix ra2?00.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Aug 2005 00:29:58 +0200
+
 netcardconfig-kanotix (0.6.3) unstable; urgency=low
 
   * fix dependencies (ethtool, wireless-tools).
