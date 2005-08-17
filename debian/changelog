@@ -1,8 +1,9 @@
-netcardconfig-kanotix (0.6.5) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.5) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Niall Walsh ]
+  * fix WPA bugs, tested working with ndiswrapper.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 Aug 2005 01:22:04 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 17 Aug 2005 02:28:30 +0200
 
 netcardconfig-kanotix (0.6.4) unstable; urgency=low
 
