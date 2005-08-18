@@ -1,8 +1,13 @@
-netcardconfig-kanotix (0.6.6) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Niall Walsh ]
+  * remove dead commented code
+  * remove old untested redhat code
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 17 Aug 2005 02:31:36 +0200
+  [ Stefan Lippers-Hollmann ]
+  * fix history/ changelog.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 18 Aug 2005 19:51:25 +0200
 
 netcardconfig-kanotix (0.6.5) unstable; urgency=low
 
@@ -20,14 +25,9 @@ netcardconfig-kanotix (0.6.4) unstable; urgency=low
 
 netcardconfig-kanotix (0.6.3) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
   * fix dependencies (ethtool, wireless-tools).
 
-  [ Niall Walsh ]
-  * remove dead commented code
-  * remove old untested redhat code
-
- -- Niall Walsh <niallwalsh@users.berlios.de>  Thu, 18 Aug 2005 15:54:26 +0000
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat,  6 Aug 2005 12:35:38 +0200
 
 netcardconfig-kanotix (0.6.2) unstable; urgency=low
 
