@@ -60,38 +60,19 @@ writeiwline() {
 	fi
 
 	if [ -n "$IWPRIV" ]; then 
-		#IWPRIVLINE="$IWPRIV"
 		IWPREUPLINE="$IWPREUPLINE iwpriv $IWPRIV\n"
 	fi
 
 	# execute ESSID last, but make sure that it is written as first option
 	if [ -n "$ESSID" ]; then 
-		#IWCONFIGLINE="$IWCONFIGLINE essid $ESSID"
 		IWOURLINE="$IWOURLINE wireless-essid $ESSID\n"
 	fi
 
-	#if [ -n "$IWCONFIGLINE" ]; then
-		#echo "DEBUG: iwconfig $DV $IWCONFIGLINE"
-		#iwconfig $DV $IWCONFIGLINE
-	#fi
-
-	#if [ -n "$IWPRIVLINE" ]; then
-		#echo "DEBUG: iwpriv $DV $IWPRIVLINE"
-		#iwpriv $DV $IWPRIVLINE
-	#fi
-
-	#if [ -n "$IWSPYLINE" ]; then
-		#echo "DEBUG: iwspy $DV $IWSPYLINE"
-		#iwspy $DV $IWSPYLINE
-	#fi
-
 	if [ $WPAON -gt 0 ]; then
 		# Using wpa requires a wpa_supplicant entry
-
 		IWPREUPLINE="$IWPREUPLINE pre-up wpa_supplicant -D$WPA_DEV -i$WLDEVICE -c/etc/wpa_supplicant.conf -B\n"
 		awk '/^network={/{if(found){found=0}else{found=1;hold=$0}}/ssid={/{if(/ssid='"$ESSID"'/){found=1}else{found=0;print hold}}{if(!found){print}}' /etc/wpa_supplicant.conf > "$TMP"
 		wpa_passphrase $ESSID $WPASECRET 2>/dev/null >> "$TMP"
-
 		cat "$TMP" > /etc/wpa_supplicant.conf
 	fi
 
@@ -459,19 +440,6 @@ configiface() {
 			rm -f "$TMP"
 		fi
 	else
-		# RedHat
-		if [ -f "/etc/sysconfig/network-scripts/ifcfg-$DV" ]; then
-			. "/etc/sysconfig/network-scripts/ifcfg-$DV"
-			IP="$IPADDR"
-			NM="$NETMASK"
-			BC="$BROADCAST"
-		fi
-		if [ -f "/etc/sysconfig/network" ]; then
-			. "/etc/sysconfig/network"
-			DG="$GATEWAY"
-		fi
-
-		# Debian
 		if [ -f /etc/network/interfaces ]; then
 			awk '/iface/{if(/'"$DV"'/){found=1}else{found=0}} 
 				/address/{if(found){address=$NF}}
@@ -502,45 +470,12 @@ configiface() {
 		$DIALOG --inputbox "$MESSAGE10" 10 45 "${NS:-${IP%.*}.254}" 2>"$TMP"
 		read NS <"$TMP" ; rm -f "$TMP"
 
-		# Add entry for Redhat init scripts
-		#if [ -d /etc/sysconfig/network-scripts ]; then
-			#cat >/etc/sysconfig/network-scripts/ifcfg-$DV <<EOF
-#DEVICE=$DV
-#IPADDR=$IP
-#NETMASK=$NM
-#NETWORK=${IP%.*}.0
-#BROADCAST=$BC
-#ONBOOT=yes
-#EOF
-			#chmod 755 /etc/sysconfig/network-scripts/ifcfg-$DV
-		#fi
-
-		#if [ -n "$DG" ]; then
-			#CMD="route add default gw $DG"
-			#echo "$CMD"
-			#$CMD
-			
-			## Add entry to /etc/sysconfig/network
-			#if [ -w /etc/sysconfig/network ]; then
-				#grep -v ^GATEWAY /etc/sysconfig/network >"$TMP"
-				#cat >"$TMP" <<EOF
-#GATEWAY=$DG
-#GATEWAYDEV=$DV
-#EOF
-				#cat "$TMP" > /etc/sysconfig/network
-				#rm -f "$TMP"
-			#fi
-		#fi
-
-		# Debian
 		if [ -w /etc/network/interfaces ]; then
 			awk '/iface/{if(/'"$DV"'/){found=1}else{found=0}}
 				{if(!found){print}}
 				END{print "\niface '"$DV"' inet static\n\taddress '"$IP"'\n\tnetmask '"$NM"'\n\tnetwork '"${IP%.*}.0"'";if("'"$BC"'"!=""){print "\tbroadcast '"$BC"'"};if("'"$DG"'"!=""){print "\tgateway '"$DG"'"};if("'"$IWOURLINE"'"!=""){print "'"$IWOURLINE"'"};print "\n"}' \
 				/etc/network/interfaces >"$TMP"
 
-			#if [ -n "$IWOURLINE" ]; then echo -e $IWOURLINE >> $TMP
-			
 			# Add an "auto" entry
 			if egrep -e "^auto[ 	]+.*$DV" /etc/network/interfaces; then
 				cat "$TMP" >/etc/network/interfaces
