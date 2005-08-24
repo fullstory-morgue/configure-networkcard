@@ -1,3 +1,9 @@
+netcardconfig-kanotix (0.6.8) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 24 Aug 2005 12:52:58 +0200
+
 netcardconfig-kanotix (0.6.7) unstable; urgency=low
 
   * fix icon location.
