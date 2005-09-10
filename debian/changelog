@@ -1,8 +1,8 @@
-netcardconfig-kanotix (0.6.8) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.8) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * change WPA_DEV to wext for ipw2?00 and madwifi.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 24 Aug 2005 12:52:58 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 10 Sep 2005 12:28:20 +0200
 
 netcardconfig-kanotix (0.6.7) unstable; urgency=low
 

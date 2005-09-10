@@ -340,10 +340,10 @@ configiface() {
 		
 		case $IWDRIVER in
 			ath_pci)
-				WPA_DEV="madwifi"
+				WPA_DEV="wext"
 				;;
 			ipw2200|ipw2100)
-				WPA_DEV="ipw"
+				WPA_DEV="wext"
 				;;
 			hostap)
 				WPA_DEV="hostap"
