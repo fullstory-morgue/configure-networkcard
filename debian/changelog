@@ -1,3 +1,9 @@
+netcardconfig-kanotix (0.6.10) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Sep 2005 00:36:25 +0200
+
 netcardconfig-kanotix (0.6.9) unstable; urgency=low
 
   * remove wpa_supplicant.conf before writing 
