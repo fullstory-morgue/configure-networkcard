@@ -436,7 +436,7 @@ configiface() {
 			if egrep -e "^auto[ 	]+.*$DV" /etc/network/interfaces; then
 				cat "$TMP" >/etc/network/interfaces
 			else
-				awk '{if(/^auto/){print $0 " '"$DV"'"}else{print}}' "$TMP" > /etc/network/interfaces
+				awk '/^auto/{if(done==0){print $0 " '"$DV"'";done=1}else{print}}' "$TMP" > /etc/network/interfaces
 			fi
 			rm -f "$TMP"
 		fi
@@ -481,7 +481,7 @@ configiface() {
 			if egrep -e "^auto[ 	]+.*$DV" /etc/network/interfaces; then
 				cat "$TMP" >/etc/network/interfaces
 			else
-				awk '{if(/^auto/){print $0 " '"$DV"'"}else{print}}' "$TMP" > /etc/network/interfaces
+				awk '/^auto/{if(done==0){print $0 " '"$DV"'";done=1}else{print}}' "$TMP" > /etc/network/interfaces
 			fi
 		fi
 
