@@ -1,8 +1,13 @@
-netcardconfig-kanotix (0.6.10) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.10) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Niall Walsh ]
+  * Fix to only add device to first auto line not all auto lines
+  * fix the auto fix to not delete most of interfaces!
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 12 Sep 2005 00:36:25 +0200
+  [ Stefan Lippers-Hollmann ]
+  * tag 0.6.10.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 25 Sep 2005 01:41:31 +0200
 
 netcardconfig-kanotix (0.6.9) unstable; urgency=low
 
