@@ -210,7 +210,7 @@ MESSAGEW22="Enable WPA support?"
 MESSAGEW23="Enter the WPA Passphrase\nfor"
 MESSAGEW25="Would you like to store your wep key in it's own private file ("
 MESSAGEW26=")?   If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question"
-NETDEVICES="$(cat /proc/net/dev | awk -F: '/eth.:|tr.:|wlan.:|ath.:|ra.:/{print $1}')"
+NETDEVICES="$(cat /proc/net/dev | awk -F: '/eth.:|lan.:|tr.:|wlan.:|ath.:|ra.:/{print $1}')"
 
 if [ -z "$NETDEVICES" ]; then
 	$DIALOG --msgbox "$MESSAGE0" 15 45
