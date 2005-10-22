@@ -1,8 +1,9 @@
-netcardconfig-kanotix (0.6.12) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.12) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * use madwifi for wpa.
+  * allow firewire, wireless as network devices.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 15 Oct 2005 23:56:52 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 23 Oct 2005 00:24:11 +0200
 
 netcardconfig-kanotix (0.6.11) unstable; urgency=low
 
