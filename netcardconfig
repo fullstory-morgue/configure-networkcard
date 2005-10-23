@@ -107,7 +107,6 @@ props2string() {
  MY_DEVICE_NAME=$(echo $MY_DEVICE_NAME | sed 's/\ /__/g')
 }
 
-<<<<<<< .mine
 addauto() {
  if egrep -e "^auto[ 	]+.*$DV" /etc/network/interfaces >/dev/null; then
   cat "$TMP" >/etc/network/interfaces
@@ -116,16 +115,6 @@ addauto() {
  fi
  rm -f "$TMP"
 }
-=======
-# Until translated (sorry non-english speakers)
-MESSAGE13="Setup wireless options?"
-MESSAGE14="Failed to bring up the interface, would you like to reconfigure it?"
-MESSAGEW22="Enable WPA support?"
-MESSAGEW23="Enter the WPA Passphrase\nfor"
-MESSAGEW25="Would you like to store your wep key in it's own private file ("
-MESSAGEW26=")?   If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question"
-NETDEVICES="$(cat /proc/net/dev | awk -F: '/eth.:|lan.:|tr.:|wlan.:|ath.:|ra.:|firewire.:|wireless.:/{print $1}')"
->>>>>>> .r531
 
 configiface() {
 	DEVICE=${NETDEVICES[$DV]}
