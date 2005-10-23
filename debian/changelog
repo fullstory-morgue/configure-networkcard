@@ -1,8 +1,10 @@
 netcardconfig-kanotix (0.6.13) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * Use /proc/net/dev and /proc/net/wireless to find devices
+  * Display more information about devices to user
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 23 Oct 2005 00:26:19 +0200
+ -- Niall Walsh <niallwalsh@users.berlios.de>  Sun, 23 Oct 2005 22:30:32 +0100
 
 netcardconfig-kanotix (0.6.12) unstable; urgency=low
 
