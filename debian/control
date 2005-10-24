@@ -13,4 +13,4 @@ Provides: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
 Replaces: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
 Conflicts: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
 Description: network configuration script
- Minimalistic ncurses/dialog-based network configuration script for KANOTIX
+ Minimalistic ncurses/dialog-based network card configuration script for KANOTIX.

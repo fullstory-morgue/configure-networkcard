@@ -1,3 +1,10 @@
+netcardconfig-kanotix (0.6.14) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+  * fix linda complaints.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 24 Oct 2005 02:25:10 +0200
+
 netcardconfig-kanotix (0.6.13) unstable; urgency=low
 
   [ Niall Walsh ]
