@@ -578,7 +578,7 @@ if [ "$count" -gt 1 ]; then
   read DV <"$TMP" ; rm -f "$TMP"
 else
   # Remove additional spaces
-  DV="$(echo $NETDEVICES)"
+  DV=0
 fi
 
 while [ -z "$IFACEDONE" ]; do
