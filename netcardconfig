@@ -543,9 +543,10 @@ while read dev mac; do
   fi
 #echo "Made to ${NETDEVICES[$NETDEVICESCOUNT]}"
   ((NETDEVICESCOUNT++))
-done < <(LANG= ifconfig -a|grep Ethernet|grep -v ^vmnet|awk '/HWaddr/{print $1" "$5}')
+done < <(ifconfig -a|grep Ethernet|grep -v ^vmnet|awk '! /^\s/{print $1" "$5}')
 for dev in $LAN; do
   if [ "$(ethtool -i $dev 2>/dev/null|awk '/^bus-info:/{print $2}')" == "ieee1394" ]; then
+    isauto="0"
     grep auto /etc/network/interfaces | grep -q $dev && isauto="1"
     NETDEVICES[$NETDEVICESCOUNT]="$dev A::$isauto D::$(ethtool -i $dev 2>/dev/null|awk '/^driver:/{print $2}') W::0 F::1"
     ((NETDEVICESCOUNT++))
@@ -578,18 +579,22 @@ if [ "$count" -gt 1 ]; then
   $DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST 2>"$TMP" || bailout
   read DV <"$TMP" ; rm -f "$TMP"
 else
-  # Remove additional spaces
+  # Only one device
   DV=0
 fi
 
 while [ -z "$IFACEDONE" ]; do
-  configiface
-  ifdown $DV
-  sleep 3
-  
-  if ! ifup $DV; then
-    $DIALOG --yesno $MESSAGE14 15 50 || IFACEDONE="DONE"
+  if [ -n "$DV" ]; then
+    configiface
+    ifdown $DV
+    sleep 3
+    if ! ifup $DV; then
+      $DIALOG --yesno $MESSAGE14 15 50 || IFACEDONE="DONE"
+    else
+      IFACEDONE="DONE"
+    fi
   else
+    # Somehow they managed to set DV blank so exit
     IFACEDONE="DONE"
   fi
 done
