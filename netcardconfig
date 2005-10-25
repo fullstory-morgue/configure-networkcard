@@ -102,7 +102,7 @@ props2string() {
   [ $isfirewire -gt 0 ] && MY_DEVICE_NAME="$NET_DEVICE_NAME_FW"
   [ -z "$MY_DEVICE_NAME" -a $iswireless -gt 0 ] && MY_DEVICE_NAME="$NET_DEVICE_NAME_W"
   [ -z "$MY_DEVICE_NAME" ] && MY_DEVICE_NAME="$NET_DEVICE_NAME"
-  MY_DEVICE_NAME="$MY_DEVICE_NAME $mac $driver"
+  MY_DEVICE_NAME="$DEVICENAME $MY_DEVICE_NAME $mac $driver"
   [ $isauto -gt 0 ] && MY_DEVICE_NAME="$MY_DEVICE_NAME $NET_DEVICE_NAME_AUTO"
   MY_DEVICE_NAME=$(echo $MY_DEVICE_NAME | sed 's/\ /__/g')
 }
