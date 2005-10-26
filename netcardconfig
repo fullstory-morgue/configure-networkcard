@@ -597,14 +597,15 @@ while (true); do
     DV=0
   fi
   # device config loop
+  IFACEDONE=""
   while [ -n "$DV" -a -z "$IFACEDONE" ]; do
     configiface
     ifdown $DV
     sleep 3
     if ! ifup $DV; then
-      $DIALOG --yesno $MESSAGE14 15 50 || IFACEDONE="DONE"
+      $DIALOG --yesno "$MESSAGE14" 15 50 || IFACEDONE="DONE"
     else
-      $DIALOG --yesno $MESSAGE15 15 50 && addauto || remauto
+      $DIALOG --yesno "$MESSAGE15" 15 50 && addauto || remauto
       IFACEDONE="DONE"
     fi
   done
