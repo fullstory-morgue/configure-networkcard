@@ -1,9 +1,23 @@
-netcardconfig-kanotix (0.6.14) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.14) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Niall Walsh ]
+  * Fix DV error for single interfaces and add isauto check for firewire.
+  * actually include the isauto firewire fix, also change some greps to -q not
+    >/dev/null.
+  * Fix ifconfig line to gather Ethernet dev and mac. really get isauto for
+    firewire in and a probably redundant check to stop getting stuck in the
+    final config loop.
+  * have initial menu display the dev (e.g. eth0) as first item in
+    description.
+  * change main loop to repear device selection until cancelled and add prompt
+    to ask if auto (prompt appears when ifup).
+  * fix relooping and some quoting on new dialogs.
+
+  [ Stefan Lippers-Hollmann ]
   * fix linda complaints.
+  * finalize version.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 24 Oct 2005 02:25:10 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 26 Oct 2005 22:53:42 +0200
 
 netcardconfig-kanotix (0.6.13) unstable; urgency=low
 
