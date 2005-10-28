@@ -586,8 +586,9 @@ if [ "$count" -gt 1 ]; then
   done
 fi
 
-# main program loop
+# main program loop until they bailout
 while (true); do
+  # first get the device
   if [ "$count" -gt 1 ]; then
     rm -f "$TMP"
     $DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST 2>"$TMP" || bailout
@@ -595,6 +596,8 @@ while (true); do
   else
     # Only one device
     DV=0
+    # they have asked to stop configuring the interface so exit
+    [ -z "$IFACEDONE" ] || bailout
   fi
   # device config loop
   IFACEDONE=""
