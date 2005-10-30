@@ -1,13 +1,13 @@
-netcardconfig-kanotix (0.6.15) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.15) unstable; urgency=low
 
   [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
   * fix another linda warning.
+  * tag new version.
 
   [ Niall Walsh ]
   * Fixup bailout for single interface machines when configured
 
- -- Niall Walsh <niallwalsh@users.berlios.de>  Fri, 28 Oct 2005 20:08:01 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 31 Oct 2005 00:12:37 +0100
 
 netcardconfig-kanotix (0.6.14) unstable; urgency=low
 
