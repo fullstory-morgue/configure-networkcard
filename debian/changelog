@@ -1,8 +1,13 @@
 netcardconfig-kanotix (0.6.16) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 31 Oct 2005 00:14:20 +0100
+  [ Niall Walsh ]
+  * Handle spaces in essid (including quoting values in call to
+    wpa_passphrase)
+
+ -- Niall Walsh <niallwalsh@users.berlios.de>  Wed,  2 Nov 2005 18:18:51 +0000
 
 netcardconfig-kanotix (0.6.15) unstable; urgency=low
 
