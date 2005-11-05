@@ -453,10 +453,7 @@ case "$LANGUAGE" in
     MESSAGEW22="WPA-Unterstützung aktivieren?"
     MESSAGEW23="WPA-Passwort eingeben für"
     MESSAGEW25="WEP-Schlüssel in privater Datei abspeichern ("
-    MESSAGEW26="? Wenn Sie hier Nein sagen, wird 
-    der WEP-Schlüssel in /etc/network/interfaces abgespeichert und kann von 
-    allen Accounts auf dem System gelesen werden. Wenn Sie mit Nein antworten, 
-    sollten Sie vielleicht 'chmod 700 /etc/network/interfaces' ausführen."
+    MESSAGEW26="? Wenn Sie hier Nein sagen, wird der WEP-Schlüssel in /etc/network/interfaces abgespeichert und kann von allen Accounts auf dem System gelesen werden. Wenn Sie mit Nein antworten, sollten Sie vielleicht 'chmod 700 /etc/network/interfaces' ausführen."
     #NWC="Netzwerkkarte_"
     NET_DEVICE_NAME="Netzwerkkarte"
     ;;
