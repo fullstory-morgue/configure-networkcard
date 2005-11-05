@@ -1,8 +1,12 @@
 netcardconfig-kanotix (0.6.17) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  3 Nov 2005 20:27:19 +0100
+  [ Niall Walsh ]
+  * German Translation Updates
+
+ -- Niall Walsh <niallwalsh@users.berlios.de>  Sat,  5 Nov 2005 19:38:11 +0000
 
 netcardconfig-kanotix (0.6.16) unstable; urgency=low
 

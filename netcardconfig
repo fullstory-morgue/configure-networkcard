@@ -398,6 +398,18 @@ DIALOG="dialog"
 [ -n "$DISPLAY" ] && [ -x /usr/bin/Xdialog ] && DIALOG="Xdialog"
 [ -f /etc/sysconfig/i18n ] && . /etc/sysconfig/i18n
 
+# Until translated (sorry non-english speakers)
+MESSAGE13="Setup wireless options?"
+MESSAGE14="Failed to bring up the interface, would you like to reconfigure it?"
+MESSAGE15="Interface enabled, do you want it auto enabled at boot?"
+MESSAGEW22="Enable WPA support?"
+MESSAGEW23="Enter the WPA Passphrase\nfor"
+MESSAGEW25="Would you like to store your wep key in it's own private file ("
+MESSAGEW26=")?   If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question"
+NET_DEVICE_NAME_W="Wireless_device"
+NET_DEVICE_NAME_FW="Firewire_device"
+NET_DEVICE_NAME_AUTO="Auto"
+
 case "$LANGUAGE" in
   de|at|ch)
     MESSAGE0="Keine unterstützten Netzwerkkarte(n) gefunden."
@@ -413,6 +425,9 @@ case "$LANGUAGE" in
     MESSAGE10="Bitte geben Sie den/die Nameserver ein"
     MESSAGE11="Setze Nameserver in /etc/resolv.conf auf "
     MESSAGE12="Füge Nameserver in /etc/resolv.conf hinzu:"
+    MESSAGE13="WLAN-Einstellungen konfigurieren?"
+    MESSAGE14="Fehler beim Aktivieren des Interface, wollen Sie es neu konfigurieren?"
+    MESSAGE15="Interface aktiviert, beim Systemstart automatisch aktivieren?"
     MESSAGEW0="Keine Wireless-Netzwerkkarte gefunden."
     MESSAGEW1="Konfiguration der Wireless-Parameter von"
     MESSAGEW2="Bitte Wireless-Netzwerkkarte auswählen"
@@ -435,8 +450,15 @@ case "$LANGUAGE" in
     MESSAGEW19="' ein\n\n\n"
     MESSAGEW20="Geben Sie ggf. zusätzliche Parameter für\n'iwpriv"
     MESSAGEW21="' ein\n\n\n"
+    MESSAGEW22="WPA-Unterstützung aktivieren?"
+    MESSAGEW23="WPA-Passwort eingeben für"
+    MESSAGEW25="WEP-Schlüssel in privater Datei abspeichern ("
+    MESSAGEW26="? Wenn Sie hier Nein sagen, wird 
+    der WEP-Schlüssel in /etc/network/interfaces abgespeichert und kann von 
+    allen Accounts auf dem System gelesen werden. Wenn Sie mit Nein antworten, 
+    sollten Sie vielleicht 'chmod 700 /etc/network/interfaces' ausführen."
     #NWC="Netzwerkkarte_"
-    NET_DEVICE_NAME="Netzwerkkarte:"
+    NET_DEVICE_NAME="Netzwerkkarte"
     ;;
   es)
     MESSAGE0="Se han encontrado tarjetas de red no soportadas."
@@ -475,7 +497,7 @@ case "$LANGUAGE" in
     MESSAGEW20="Teclee los parámetros adicionales para\n'iwpriv"
     MESSAGEW21="' si es necesario\n\n\n"
     #NWC="tarjeta_de_red_"
-    NET_DEVICE_NAME="Dispositivo_de_la_red:"
+    NET_DEVICE_NAME="Dispositivo_de_la_red"
     ;;
   *)
     MESSAGE0="No supported network cards found."
@@ -516,18 +538,6 @@ case "$LANGUAGE" in
     NET_DEVICE_NAME="Network_device"
     ;;
 esac
-
-# Until translated (sorry non-english speakers)
-MESSAGE13="Setup wireless options?"
-MESSAGE14="Failed to bring up the interface, would you like to reconfigure it?"
-MESSAGE15="Interface enabled, do you want it auto enabled at boot?"
-MESSAGEW22="Enable WPA support?"
-MESSAGEW23="Enter the WPA Passphrase\nfor"
-MESSAGEW25="Would you like to store your wep key in it's own private file ("
-MESSAGEW26=")?   If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question"
-NET_DEVICE_NAME_W="Wireless_device"
-NET_DEVICE_NAME_FW="Firewire_device"
-NET_DEVICE_NAME_AUTO="Auto"
 
 NETDEVICESCOUNT=0
 LAN=$(tail +3 /proc/net/dev|awk -F: '{print $1}'|sed "s/\s*//"|grep -v -e ^lo -e ^vmnet|sort)
