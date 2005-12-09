@@ -9,9 +9,9 @@ Package: netcardconfig-kanotix
 Architecture: all
 Depends: ethtool, wireless-tools, dialog, pump, rxvt, kanotix-su (>= 0.2)
 Suggests: xdialog
-Provides: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
-Replaces: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
-Conflicts: netcardconfig-knoppix, wlcardconfig-kanotix, wlcardconfig-knoppix
+Provides: wlcardconfig-kanotix
+Replaces: wlcardconfig-kanotix
+Conflicts: wlcardconfig-kanotix
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
  KANOTIX.
