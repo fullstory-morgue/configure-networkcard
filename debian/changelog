@@ -1,5 +1,10 @@
 netcardconfig-kanotix (0.6.18) UNRELEASED; urgency=low
 
+  [ Niall Walsh ]
+  * Italian translation
+  * French translation
+  * Re-arrange translations and default all strings to English
+
   * NOT RELEASED YET
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri,  9 Dec 2005 02:26:48 +0100
