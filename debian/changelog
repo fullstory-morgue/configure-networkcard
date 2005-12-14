@@ -1,8 +1,8 @@
 netcardconfig-kanotix (0.6.18) UNRELEASED; urgency=low
 
   [ Niall Walsh ]
-  * Italian translation
-  * French translation
+  * Italian translation (thanks alessiog)
+  * French translation (thanks clampin)
   * Re-arrange translations and default all strings to English
 
   * NOT RELEASED YET
