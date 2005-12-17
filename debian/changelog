@@ -1,13 +1,15 @@
-netcardconfig-kanotix (0.6.18) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.18) unstable; urgency=low
 
   [ Niall Walsh ]
   * Italian translation (thanks alessiog)
   * French translation (thanks clampin)
   * Re-arrange translations and default all strings to English
 
-  * NOT RELEASED YET
+  [ Stefan Lippers-Hollmann ]
+  * remove cdbs auto-update feature.
+  * prepare upload.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri,  9 Dec 2005 02:26:48 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 17 Dec 2005 01:30:48 +0100
 
 netcardconfig-kanotix (0.6.17) unstable; urgency=low
 
