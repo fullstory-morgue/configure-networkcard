@@ -1,8 +1,9 @@
 netcardconfig-kanotix (0.6.19) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * clean up debian/control.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 17 Dec 2005 01:32:24 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 17 Dec 2005 01:34:34 +0100
 
 netcardconfig-kanotix (0.6.18) unstable; urgency=low
 
