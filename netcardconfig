@@ -176,7 +176,6 @@ configiface() {
         }' /etc/network/interfaces >"$TMP"
 
       read ESSID NWID MODE CHANNEL FREQ SENS RATE RTS FRAG IWCONFIG IWSPY IWPRIV KEY<"$TMP"
-      ESSID=$(echo $ESSID | tr "~" " ")
 
       if [ "$ESSID" = "~~~" ]; then  ESSID=""; fi
       if [ "$NWID" = "~~~" ]; then  NWID=""; fi
@@ -191,6 +190,8 @@ configiface() {
       if [ "$IWSPY" = "~~~" ]; then  IWSPY=""; fi
       if [ "$IWPRIV" = "~~~" ]; then  IWPRIV=""; fi
       if [ "$KEY" = "~~~" ]; then  KEY=""; fi
+
+      ESSID=$(echo $ESSID | tr "~" " " | sed 's/ *$//')
 
       if [ -z "$KEY" ]; then
         KEY=$(cat /etc/network/wep.$DV 2>/dev/null)
