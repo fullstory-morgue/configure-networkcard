@@ -678,13 +678,18 @@ if [ "$count" -gt 1 ]; then
   done
 fi
 
+# To translate
+EXITKEY="E"
+EXITMENU="$EXITKEY Exit"
+
 # main program loop until they bailout
 while (true); do
   # first get the device
   if [ "$count" -gt 1 ]; then
     rm -f "$TMP"
-    $DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST 2>"$TMP" || bailout
+    $DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST $EXITMENU 2>"$TMP" || bailout
     read DV <"$TMP" ; rm -f "$TMP"
+    [ "$DV" = "$EXITKEY" ] && bailout
   else
     # Only one device
     DV=0

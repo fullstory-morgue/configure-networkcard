@@ -7,8 +7,9 @@ netcardconfig-kanotix (0.6.19) UNRELEASED; urgency=low
 
   [ Niall Walsh ]
   * Change check so rt2??0 (not just rt2?00) cards are ifconfiged on pre-up
+  * Add Exit option to main menu
 
- -- Niall Walsh <niallwalsh@users.berlios.de>  Mon,  9 Jan 2006 13:24:22 +0000
+ -- Niall Walsh <niallwalsh@users.berlios.de>  Thu, 12 Jan 2006 14:17:23 +0000
 
 netcardconfig-kanotix (0.6.18) unstable; urgency=low
 
