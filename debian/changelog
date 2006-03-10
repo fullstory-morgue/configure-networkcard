@@ -1,15 +1,15 @@
-netcardconfig-kanotix (0.6.19) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.19) unstable; urgency=low
 
   [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
   * clean up debian/control.
-  * rearrange essid space handling to get useless spaces out of dialogs
+  * rearrange essid space handling to get useless spaces out of dialogs.
+  * finalize version.
 
   [ Niall Walsh ]
   * Change check so rt2??0 (not just rt2?00) cards are ifconfiged on pre-up
   * Add Exit option to main menu
 
- -- Niall Walsh <niallwalsh@users.berlios.de>  Thu, 12 Jan 2006 14:17:23 +0000
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 10 Mar 2006 01:32:46 +0100
 
 netcardconfig-kanotix (0.6.18) unstable; urgency=low
 
