@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: netcardconfig-kanotix
 Architecture: all
-Depends: ethtool, wireless-tools, dialog, pump, rxvt, kanotix-su (>= 0.2), kanet
+Depends: ethtool, wireless-tools, dialog, pump, rxvt, kanotix-su (>= 0.2)
 Suggests: xdialog
 Provides: wlcardconfig-kanotix
 Replaces: wlcardconfig-kanotix
