@@ -1,8 +1,13 @@
-netcardconfig-kanotix (0.6.20) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.20) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Joerg Schirottke ]
+  * Allow wext for all wlan cards exept hostap.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 10 Mar 2006 01:35:48 +0100
+  [ Stefan Lippers-Hollmann ]
+  * hostap is using wext as well.
+  * bump standards version to 3.7.2.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 May 2006 00:45:48 +0200
 
 netcardconfig-kanotix (0.6.19) unstable; urgency=low
 
