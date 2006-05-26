@@ -1,8 +1,8 @@
-netcardconfig-kanotix (0.6.21) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.21) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * make tail usage POSIX conforming, thanks to huafbauer for noticing.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 12 May 2006 00:47:20 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 27 May 2006 00:51:17 +0200
 
 netcardconfig-kanotix (0.6.20) unstable; urgency=low
 
