@@ -98,7 +98,7 @@ fi
 
 if display_netdev_list "$TYPE" "${IFACE[@]}"
 then
-	IFACE=$(echo $SSFT_RESULT | awk '{ print $1 }')
+	IFACE=${SSFT_RESULT%% *}
 fi
 
 echo $IFACE
