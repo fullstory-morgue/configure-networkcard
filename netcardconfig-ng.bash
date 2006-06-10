@@ -61,7 +61,7 @@ function display_netdev_list () {
 	shift
 	tit="Choose Network Device"
 	msg="What $type device is to be configured?"
-	ssft_select_single "$tit" "$msg" "$@"
+	ssft_select_single "$tit" "$msg" "Local Area Network" "Wireless Network"
 }
 
 get_valid_netdevs
@@ -81,7 +81,7 @@ then
 	get_netdev_desc ${WIRELESS_IFACES[*]}
 else
 	SSFT_DEFAULT="Local Area Network"
-	if display_netdev_wire_or_wifi "Local Area Network" "Wireless Network"
+	if display_netdev_wire_or_wifi
 	then
 		case "$SSFT_RESULT" in
 			"Local Area Network")
