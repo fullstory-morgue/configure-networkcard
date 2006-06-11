@@ -13,12 +13,7 @@ source $LIBPATH/display_ssft_functions || exit 1
 
 source ssft.sh || exit 1
 
-if [[ $DISPLAY ]]
-then
-	export SSFT_FRONTEND="kdialog"
-else
-	export SSFT_FRONTEND="dialog"
-fi
+SSFT_FRONTEND=$(ssft_choose_frontend)
 
 get_netdev_valid_ifaces
 
@@ -55,7 +50,10 @@ until [[ $IFACE ]]
 do
 	if display_iface_list "$TYPE" "${IFACE[@]}"
 	then
-		IFACE=${SSFT_RESULT%% *}
+		if display_confirmation "Configure $TYPE settings for ${SSFT_RESULT%% *} ?"
+		then
+			IFACE=${SSFT_RESULT%% *}
+		fi
 	else
 		display_error "Please select a network interface."
 	fi

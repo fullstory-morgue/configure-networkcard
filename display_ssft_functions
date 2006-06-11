@@ -4,6 +4,10 @@ function display_error () {
 	ssft_display_error Error "$@"
 }
 
+function display_confirmation () {
+	ssft_yesno Confirm "$@"
+}
+
 function display_wired_or_wireless () {
 	local tit msg
 	tit="Network Type"
