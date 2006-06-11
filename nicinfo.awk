@@ -33,7 +33,7 @@ func is_wireless_or_wired() {
 BEGIN {
 	IGNORECASE=1
 
-	if (ARGV[1] != "lo") {
+	if (ARGV[1] !~ /(lo|vmnet)/) {
 		iface = ARGV[1]
 		delete ARGV[1]
 	}

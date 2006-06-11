@@ -6,11 +6,12 @@ export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 
 #LIBPATH=/usr/lib/netcardconfig-kanotix
 LIBPATH=$PWD
+TMPPATH=$(mktemp -d)
+
+trap "{ rm -f $TMPPATH; }" SIGINT SIGTERM EXIT
 
 source $LIBPATH/get_netdev_functions || exit 1
-
-source $LIBPATH/display_ssft_functions || exit 1
-
+source $LIBPATH/display_functions || exit 1
 source ssft.sh || exit 1
 
 SSFT_FRONTEND=$(ssft_choose_frontend)
