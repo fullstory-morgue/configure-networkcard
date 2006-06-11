@@ -18,7 +18,7 @@ func get_sysfs_attr(attr) {
 
 func is_wireless_or_wired() {
 	iface_regexp = sprintf ("^%s.*", iface)
-	iface_iwconfig = sprintf ("iwconfig %s 2>/dev/null", iface)
+	iface_iwconfig = sprintf ("iwgetid %s -p", iface)
 	return_first_regexp_from_cmd(iface_iwconfig, iface_regexp)
 	close(iface_iwconfig)
 	if ($0 ~ iface_regexp) {

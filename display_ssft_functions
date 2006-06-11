@@ -1,8 +1,7 @@
 #!/bin/bash
 
 function display_error () {
-	ssft_display_error ERROR "$@"
-	exit 1
+	ssft_display_error Error "$@"
 }
 
 function display_wired_or_wireless () {

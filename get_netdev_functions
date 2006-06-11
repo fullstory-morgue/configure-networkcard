@@ -6,31 +6,34 @@ LIBPATH=$PWD
 NICINFO=$LIBPATH/nicinfo.awk
 
 function get_netdev_valid_ifaces () {
-	local count iface netdev_type
-	for i in /sys/class/net/*
-	do
-		((count++))
-		iface=$(basename $i)
-		# TODO: /usr/lib/netcardconfig-kanotix perhaps
-		netdev_type=$(awk -f $NICINFO $iface type)
-		case $netdev_type in
-			wired)
-				WIRED_IFACES[$count]=$iface
-				;;
-			wireless)
-				WIRELESS_IFACES[$count]=$iface
-				;;
-		esac
-	done
+	if [[ ! -d /sys/class/net ]]
+	then
+		return
+	fi
+	local count netdev_type
+	pushd /sys/class/net >/dev/null
+		for i in *
+		do
+			((count++))
+			netdev_type=$(awk -f $NICINFO $i type)
+			case $netdev_type in
+				wired)
+					WIRED_IFACES[$count]=$i
+					;;
+				wireless)
+					WIRELESS_IFACES[$count]=$i
+					;;
+			esac
+		done
+	popd >/dev/null
 }
 
-function get_netdev_desc () {
-	local count iface desc
+function get_netdev_description () {
+	local count desc
 	for i in "$@"
 	do
 		((count++))
-		iface=$i
-		desc=$(awk -f $NICINFO $iface desc)
-		IFACE[$count]="$iface    [$desc]"
+		desc=$(awk -f $NICINFO $i desc)
+		IFACE[$count]="$i    [$desc]"
 	done
 }
