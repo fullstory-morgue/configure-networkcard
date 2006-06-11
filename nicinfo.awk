@@ -18,9 +18,9 @@ func get_sysfs_attr(attr) {
 
 func is_wireless_or_wired() {
 	iface_regexp = sprintf ("^%s.*", iface)
-	iface_iwconfig = sprintf ("iwgetid %s -p", iface)
-	return_first_regexp_from_cmd(iface_iwconfig, iface_regexp)
-	close(iface_iwconfig)
+	iface_we = sprintf ("iwgetid %s -p", iface)
+	return_first_regexp_from_cmd(iface_we, iface_regexp)
+	close(iface_we)
 	if ($0 ~ iface_regexp) {
 		type = "wireless"
 	}
@@ -77,13 +77,18 @@ BEGIN {
 				product = $0
 				get_sysfs_attr("SYSFS{manufacturer}")
 				manufacturer = $0
-				desc = sprintf("%s %s", manufacturer, product)
+				if (substr(manufacturer, product)) {
+					desc = sprintf("%s", product)
+				}
+				else {
+					desc = sprintf("%s %s", manufacturer, product)
+				}
 			}
 			else if (/^ieee1394$/) {
 				desc = "IEEE1394 (FireWire) Network Adapter"
 			}
 			commercialbans = "[ \t]?+(corporation|communications|technologies|technology|group|inc\\.|ltd\\.|co\\.|\\(tm\\)|\\(rev .+\\)),?"
-			gsub (commercialbans,"", desc)
+			gsub (commercialbans, "", desc)
 			print desc
 		}
 		delete ARGV[i]
