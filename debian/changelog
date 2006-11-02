@@ -1,8 +1,9 @@
-netcardconfig-kanotix (0.6.22) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.22) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * switch to utf-8.
+  * fix lintian errors.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 27 May 2006 00:53:21 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  2 Nov 2006 13:51:34 +0100
 
 netcardconfig-kanotix (0.6.21) unstable; urgency=low
 
