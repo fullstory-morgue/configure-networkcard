@@ -1,8 +1,10 @@
-netcardconfig-kanotix (0.6.23) UNRELEASED; urgency=low
+netcardconfig-kanotix (0.6.23) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * re- indent.
+  * fix up i18n.
+  * get rid of stupid /etc/sysconfig/ dependency.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  2 Nov 2006 13:52:56 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  9 Nov 2006 23:01:55 +0100
 
 netcardconfig-kanotix (0.6.22) unstable; urgency=low
 
