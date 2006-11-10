@@ -388,7 +388,7 @@ configiface() {
 XDIALOG_HIGH_DIALOG_COMPAT=1
 export XDIALOG_HIGH_DIALOG_COMPAT
 
-TMP="/tmp/netconfig.tmp$$"
+TMP="$(mktemp -p /tmp/ netcardconfig-XXXXXXXXXX)"
 
 DIALOG="dialog"
 [ -n "$DISPLAY" ] && [ -x /usr/bin/Xdialog ] && DIALOG="Xdialog"
