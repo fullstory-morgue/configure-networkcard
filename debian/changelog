@@ -1,3 +1,9 @@
+netcardconfig-kanotix (0.6.25) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 10 Nov 2006 15:04:39 +0100
+
 netcardconfig-kanotix (0.6.24) unstable; urgency=low
 
   * fix insecure tempfile handling.
