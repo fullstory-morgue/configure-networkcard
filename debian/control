@@ -1,17 +1,15 @@
-Source: netcardconfig-kanotix
+Source: configure-networkcard
 Section: net
 Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5.0.0)
 Standards-Version: 3.7.2
 
-Package: netcardconfig-kanotix
+Package: configure-networkcard
 Architecture: all
-Depends: ethtool, wireless-tools, dialog, pump, rxvt, kanotix-su (>= 0.2)
+Depends: ethtool, wireless-tools, dialog, pump, rxvt, su-me (>= 0.2)
 Suggests: xdialog
-Provides: wlcardconfig-kanotix
-Replaces: wlcardconfig-kanotix
-Conflicts: wlcardconfig-kanotix
+Conflicts: wlcardconfig-kanotix, netcardconfig-kanotix 
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
- KANOTIX.
+ sidux.
