@@ -1,10 +1,12 @@
-configure-networkcard (0.6.25) UNRELEASED; urgency=low
+configure-networkcard (0.6.25) unstable; urgency=low
 
-  * NOT RELEASED YET
-
+  [ Joaquim Boura ]
   * Initial version for sidux.
 
- -- Joaquim Boura <x-un-i@sidux.com>  Sun,  3 Dec 2006 23:17:03 +0100
+  [ Stefan Lippers-Hollmann ]
+  * tag and upload.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue,  5 Dec 2006 11:39:42 +0100
 
 netcardconfig-kanotix (0.6.24) unstable; urgency=low
 
