@@ -1,3 +1,10 @@
+configure-networkcard (0.6.26) unstable; urgency=low
+
+  * rxvt is no longer necessary.
+  * smal debian/control tweaking.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue,  5 Dec 2006 11:42:30 +0100
+
 configure-networkcard (0.6.25) unstable; urgency=low
 
   [ Joaquim Boura ]
