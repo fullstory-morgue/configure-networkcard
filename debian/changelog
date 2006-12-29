@@ -1,8 +1,12 @@
 configure-networkcard (0.6.27) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue,  5 Dec 2006 11:44:04 +0100
+  [ Niall Walsh ]
+  * Cleanup wpa handling to relect debian wpasupplicant
+
+ -- Niall Walsh <Niall Walsh>  Fri, 29 Dec 2006 01:45:42 +0000
 
 configure-networkcard (0.6.26) unstable; urgency=low
 
