@@ -279,7 +279,7 @@ configiface() {
 							}
 						}
 					}
-					' interfaces)
+					' /etc/network/interfaces)
 				$DIALOG --inputbox "$MESSAGEW23 $ESSID" 15 50 "$WPASECRET" 2>"$TMP" || bailout 1
 				read WPASECRET <"$TMP" ; rm -f "$TMP"
 				
