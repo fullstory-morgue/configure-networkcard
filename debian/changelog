@@ -1,9 +1,5 @@
-configure-networkcard (0.6.28) UNRELEASED; urgency=low
+configure-networkcard (0.6.28) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Niall Walsh ]
   * fix awk parsing of wpa password
 
  -- Niall Walsh <niallwalsh@users.berlios.de>  Wed,  3 Jan 2007 21:50:51 +0000
