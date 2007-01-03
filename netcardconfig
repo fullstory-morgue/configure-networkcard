@@ -260,8 +260,26 @@ configiface() {
 				
 				WPAON=1
 				KEY=""
-				WPASECRET=$(awk '/'"$DV"'/{if(found){found=0}else{found=1}}/wpa-ssid/{if(/wpa-ssid '"$ESSID"'/){found=1}else{found=0}}/wpa-psk/{if(found){gsub(/^\W*#psk "/,"");gsub(/"\W*$/,"");print}}' /etc/network/interfaces)
-				
+				WPASECRET=$(awk '
+					/iface/{
+						if(found){
+							found=0
+						}
+						else if (/'"$DV"'/){
+							found=1
+						}
+					}
+					/wpa-psk/{
+						if(found){
+							gsub(/\W*#.*$/,"");
+							if (gsub(/^\W*wpa-psk\W*/,"")){
+								gsub(/\W.*$/,"");
+								print;
+								exit;
+							}
+						}
+					}
+					' interfaces)
 				$DIALOG --inputbox "$MESSAGEW23 $ESSID" 15 50 "$WPASECRET" 2>"$TMP" || bailout 1
 				read WPASECRET <"$TMP" ; rm -f "$TMP"
 				
