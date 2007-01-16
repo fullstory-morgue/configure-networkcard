@@ -2,7 +2,7 @@
 # netcardconfig - A very light-weight text-based network configuration tool.
 # (C) Klaus Knopper Nov 2002
 # (C) 2006 Niall Walsh to integrate wlan cards
-# (C) 2004-2006 by Stefan Lippers-Hollmann
+# (C) 2004-2007 by Stefan Lippers-Hollmann
 
 PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 export PATH
@@ -64,7 +64,7 @@ writeiwline() {
 	fi
 	
 	if [ $WPAON -gt 0 ]; then
-		IWOURLINE="$IWOURLINE wpa-ssid $ESSID\n  wpa-psk $WPASECRET\n"
+		IWOURLINE="$IWOURLINE wpa-ssid $ESSID\n wpa-psk $WPASECRET\n"
 	fi
 	
 	IWOURLINE="$IWOURLINE $IWPREUPLINE"
