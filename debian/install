@@ -1,3 +1,4 @@
-netcardconfig usr/sbin/
-*.desktop usr/share/applnk/sidux/Net/
-icons usr/share/
+netcardconfig		usr/sbin/
+sidux-networkconfig	usr/sbin/
+*.desktop		usr/share/applnk/sidux/Net/
+icons			usr/share/

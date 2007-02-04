@@ -1,8 +1,12 @@
 This package was debianized by Klaus Knopper <knoppix@knopper.net> on
 Mon,  4 Jun 2001 00:24:42 +0200.
 
-It was downloaded from http://www.knopper.net/knoppix/
+It was downloaded from http://sidux.com
 
-Upstream Author: Klaus Knopper <knoppix@knopper.net>
+Upstream Author: netcardconfig:
+			- Klaus Knopper <knoppix@knopper.net>
+			- Niall Walsh <niallwalsh@users.berlios.de>
+                 sidux-networkconfig:
+		 	- Raider700 <raider700@gmx.at>
 
 Copyright: GPL, see /usr/share/common-licenses
