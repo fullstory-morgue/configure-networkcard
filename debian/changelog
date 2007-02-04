@@ -1,12 +1,12 @@
 configure-networkcard (0.6.30) UNRELEASED; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
   [ Kel Modderman ]
   * Don't use ndiswrapper backend for wpa_supplicant.
 
- -- Kel Modderman <kel@otaku42.de>  Sun,  4 Feb 2007 20:51:08 +1000
+  [ Stefan Lippers-Hollmann ]
+  * add http://www.sidux.at/download/sidux-networkconfig.sh.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun,  4 Feb 2007 20:19:50 +0100
 
 configure-networkcard (0.6.29) unstable; urgency=low
 
