@@ -233,9 +233,7 @@ configiface() {
 		esac
 			
 		if [ -z "$WPA_DEV" ]; then
-			if [ -d /proc/net/ndiswrapper/$DV ]; then
-				WPA_DEV=ndiswrapper
-			elif [ -d /proc/net/hostap/$DV ]; then
+			if [ -d /proc/net/hostap/$DV ]; then
 				WPA_DEV=hostap
 			elif [ $WLDEVICECOUNT -eq 1 ]; then
 				if [ -e /proc/driver/atmel ]; then
