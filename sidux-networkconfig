@@ -1,12 +1,11 @@
 #!/bin/bash
-# This script can be used to configure the /etc/network/interfaces and the /etc/wpa_supplicant.conf for wpa-roam.
-# Tested and working on Debian SID - but it also can work under other Debian Systems.
+# This script can be used to configure the /etc/network/interfaces and the /etc/wpa_supplicant.conf (also for wpa-roam).
+# Tested and working on Sidux - but it also can work under other Debian Systems.
 # If you can find a bug please contact the author.
 # Author: Raider700 <raider700@gmx.at>
 # This script is under GPLv2
-# Last edit: 05. January 2007
+# Last edit: 16. February 2007
 # Proofreading of literals by Richard Holt, 12-Jan-2007.
-#
 # Thx to x-un-i for helping me with writing this script!
 
 
@@ -22,18 +21,89 @@ user_network_wlan=""
 
 # Path to the files:
 pathb="/tmp/" # This is for the temporary building files
-pathi="/etc/network/" # This is for the interfaces file
+pathi="/etc/network/" #This is for the interfaces file
 pathw="/etc/" # This is for the wpa_supplicant.conf file
 
 # Here you can activate 5 fake-networks (3 lan, 2 wlan)
 use_fake_networks="no" # You can set "yes" to activate it.
 
-# Here you can force the dialog type:
-force_dialog="" # You can enter (if installed) dialog, zenity, text, nothing=auto
-
 # Name of the script: Sidux networkconfiguration
 # [Should this be sidux-networkconfig.sh?  RH.]
 title="Sidux networkconfiguration"
+
+####################################################################################################################################
+####################################################################################################################################
+## Information about the structure and the menue: ##################################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+#This is the menue structure of the script:
+# 1)_Submenue:_Configure_one_or_more_networkcards
+#	1)_Configure_one_or_more_lan_cards
+#	2)_Configure_one_or_more_wlan_cards
+#	3)_Configure_only_one_card
+#	4)_Show_all_configured_network_cards
+#	5)_Return_to_main_menue
+# 2)_Submenue:_Configure_wireless_acess_points_(wpa-roam)
+#	1)_Add_a_new_wpa-roam_wlan_network
+#	2)_Delete_one_wpa-roam_wlan_network
+#	3)_Show_all_installed_wpa-roam_wlan_networks
+#	4)_Return_to_main_menue
+# 3)_Submenue:_Restore_backup_or_delete_full_configuration
+#	1)_Restore_last_backup
+#	2)_Delete_full_configuration_(reset_files)
+#	3)_Install_all_needet_packages
+#	4)_Return_to_main_menue
+# 4)_Submenue:_Help_and_information_(faq)
+#	1)_What_is_wpa-roam
+#	2)_What_is_DHCP
+#	3)_What_is_Static
+#	4)_Display_current_interfaces_file
+#	5)_Display_current_wpa_supplicant.conf_file
+#	7)_Return_to_main_menue
+# 5)_Start/Restart_all_networks
+# 6)_Exit_this_script
+
+#Ordering of the functions:
+# 0:
+#  inputbox
+#  msgbox
+#  yesno
+#  select_single
+#  select_more
+# 1:
+#  exit-script
+#  restart-lan-networks
+#  restart-wlan-networks
+#  get-networks
+#  check-ip
+#  generate-base-interface
+#  generate-base-wpa
+#  get-static-entry
+#  save-files-yes-no
+#  get_current_configuration
+#  delete-if-exist
+#  delete-if-exist2
+# 2:
+#  check-wlan-name
+#  get-wlan-type
+#  new-wlan
+#  add-wireless-network
+#  remove_existing_wlan
+# 3:
+#  generate-lan
+#  get-wep-entry
+#  generate-wlan
+#  install-lan-cards
+#  install-wlan-cards
+#  install-one-card
+# 4:
+#  restore-backup-files
+#  show_all_cards
+#  show_all_wlans
+#  show_interfaces
+#  show_wpa
+#  install_packages
 
 ####################################################################################################################################
 ####################################################################################################################################
@@ -44,89 +114,102 @@ title="Sidux networkconfiguration"
 # Test if root:
 SU_ME=$(type -p su-me)  || SU_ME="/usr/bin/su-me"
 if [ "$UID" -ne 0 ]; then
-        [ -x "$SU_ME" ] && exec "$SU_ME" "$0" 
-
-        echo Error: You must be root to run this script!
-        exit 1
+	[ -x "$SU_ME" ] && exec "$SU_ME" "$0" 
+	
+	echo "Error: You must be root to run this script!"
+	exit 1
 fi
+
+# Greeting for the users:
+echo "--------------------------------------------------------------------------------"
+echo "################################################################################"
+echo "--------------------------------------------------------------------------------"
+echo "Welcome to the network tool with wpa-roam support!"
 
 # Check if ssft is installed:
 if [ -f /usr/sbin/ssft.sh ]; then
 	. /usr/bin/ssft.sh || no_ssft="missing"
 else
-	. ssft.sh || no_ssft="missing"
+	. ./ssft.sh || no_ssft="missing"
 fi
 
 if [ "$no_ssft" = "missing" ]; then
-	echo "
-################################################################################
-Ssft.sh is not installed -> Trying to install it now.
-(Press enter to continue.)
-
-If this fails, please download ssft.sh
-and copy it into the same folder as this script.
-################################################################################"
-	read continue1
+	echo "################################################################################"
+	echo "ssft.sh is not installed -> Trying to install it now."
+	echo "(Press enter to continue.)"
+	echo ""
+	echo "If this fails, please download ssft.sh"
+	echo "and copy it into the same folder as this script."
+	echo "################################################################################"
 	
+	read continue1
 	apt-get update && apt-get install ssft && echo "Ssft is installed now - please restart this script"
 	
 	exit 1
 fi
 
 # Check witch type of dialog is possible:
-. ssft.sh
-[ -n "$SSFT_FRONTEND" ] ||  SSFT_FRONTEND="$(  ssft_choose_frontend )"
+[ -n "$SSFT_FRONTEND" ] ||  SSFT_FRONTEND="$(ssft_choose_frontend)"
+echo "--------------------------------------------------------------------------------"
 echo "Using $SSFT_FRONTEND as frontend for all dialogs."
 
+
 # Inputbox for ssft:
-function inputbox {
+function inputbox()
+{
 	local Title
 	local Text
-
+	
 	# inputbox Title Text dummy default
 	Title="$1"
 	Text="$2"
-
 	# $3 not used
 	# The default value if used
 	SSFT_DEFAULT=$4
+	
 	ssft_read_string "${Title}" "${Text}";
 	# return value readable over $SSFT_RESULT
 }
 
 # Messagebox for ssft:
-function msgbox {
+function msgbox()
+{
 	local Title
 	local Text
 	
 	# msgbox title text
 	Title="$1"
 	Text="$2"
+	
 	ssft_display_message "${Title}" "${Text}"
 }
 
 # Yes,No question for ssft:
-function yesno {
+function yesno()
+{
 	local Title
 	local Text
-
+	
 	# yesno title text width
 	Title=$1
 	Text=$2
+	
 	ssft_yesno "${Title}" "${Text}"
+	
 	return $?
 }
 
 # Selectbox for ssft:
-function select_single {
+function select_single()
+{
 	local Title
 	local Text
-
+	
 	# select one of a list
 	Title=$1
 	Text=$2
 	shift 2
-
+	
 	if ssft_select_single "$Title" "$Text" $@ ; then
 		Selected=$SSFT_RESULT
 		return 0
@@ -136,30 +219,32 @@ function select_single {
 }
 
 # Multiple selectbox for ssft:
-function select_more {
+function select_more()
+{
 	local Title
 	local Text
-
+	
 	# select one of a list
 	Title=$1
 	Text=$2
 	shift 2
-
-	if ssft_select_multiple "$Title" "$Text" $@; then
+	
+	if ssft_select_multiple "$Title" "$Text" $@ ; then
 		Selected=$SSFT_RESULT
 		return 0
 	else
-		return 1 
+		return 1
 	fi
 }
 
 # Kdialog has some problems so warn the user:
 if [ "$SSFT_FRONTEND" = "kdialog" ]; then
-	msgbox "$title" "Warning: script is using kdialog for all windows! 
-This means, that the speed is extremely slow and some errors (which you may ignore) appear from this dialog type. Another known error with kdialog is that the script ends after the first start without any reason. So just restart it and everything will work OK.
-
-To get good speed with no errors, install zenity as soon as possible.
-( apt-get update && apt-get install zenity )"
+	echo "--------------------------------------------------------------------------------"
+	echo "Warning: script is using kdialog for all windows! "
+	echo "This means, that the speed is maybe extremely slow and some errors (which you may ignore) appear from this dialog type. Another known error with kdialog is that the script ends after the first start without any reason. So just restart it and normally the script will work."
+	echo ""
+	echo "To get good speed with no errors, install zenity as soon as possible."
+	echo "( apt-get update && apt-get install zenity )"
 fi
 
 ####################################################################################################################################
@@ -169,83 +254,122 @@ fi
 ####################################################################################################################################
 
 # Function for stopping the script and cleaning up temporary stuff:
-function exit-script {
+function exit-script()
+{
 	# Cleaning up TMP stuff:
-	rm -f "$pathb"interfaces-build
-	rm -f "$pathb"wpa_supplicant.conf-build
-
-	echo "--------------------------------------------------------------------------------
-	################################################################################
-	--------------------------------------------------------------------------------
-	Thanks for using this script!
-	--------------------------------------------------------------------------------
-	################################################################################
-	--------------------------------------------------------------------------------"
-
+	rm -f	"${pathb}interfaces-build" \
+		"${pathb}wpa_supplicant.conf-build"
+		
+	echo "--------------------------------------------------------------------------------"
+	echo "################################################################################"
+	echo "--------------------------------------------------------------------------------"
+	echo "Thanks for using this script!"
+	echo "--------------------------------------------------------------------------------"
+	echo "################################################################################"
+	echo "--------------------------------------------------------------------------------"
+	
 	# Exit with state 0:
 	exit 0
 }
 
 # Function to restart all lan networks:
-function restart-lan-networks {
+function restart-lan-networks()
+{
 	if `yesno "$title" "Do you want to restart LAN networking now?"`; then
 		typeset -i number
+		
 		# First shutting down every lan:
 		number=0
+		
 		for var in ${lan[*]}; do
-			ifconfig ${lan[$number]} down
+			echo "--------------------------------------------------------------------------------"
+			echo "Restarting ${lan[$number]}"
+			
+			# Shutdown the lan:
+			echo "Stopping ..."
 			ifdown ${lan[$number]}
-			number=$number+1
-		done
-	
-		# Wait for a really stop of all lan cards:
-		sleep 10
-	
-		# Starting all networks:
-		number=0
-		for var in ${lan[*]}; do
+			
+			# Wait for ending ifdown:
+			sleep 5
+			echo "Starting ..."
+			
+			# Starting the lan:
 			ifup ${lan[$number]}
-			ifconfig ${lan[$number]} up
 			number=$number+1
 		done
 	fi
 	
 	# Cleaning up the variables:
+	echo "--------------------------------------------------------------------------------"
+	echo "Restarting lan is done."
+	
 	unset number
 }
 
 # Function to restart all wlan networks:
-function restart-wlan-networks {
-	if `yesno "$title" "Do you want to restart WLAN networking now?"`; then
-		typeset -i number
-		# First shutting down every wlan and really stop wpa_supplicant:
+function restart-wlan-networks()
+{
+	if yesno "$title" "Do you want to restart WLAN networking now?"; then
+		typeset -i number number_type
+		# Restarting every wlan:
 		killall wpa_supplicant
 		number=0
 		for var in ${wlan[*]}; do
-			ifconfig ${wlan[$number]} down
-			ifdown ${wlan[$number]}
-			number=$number+1
-		done
-	
-		# Wait for a really stop of all wlan cards:
-		sleep 10
-	
-		# Starting all networks:
-		number=0
-		for var in ${wlan[*]}; do
-			ifup ${wlan[$number]}
-			ifconfig ${wlan[$number]} up
+			echo "--------------------------------------------------------------------------------"
+			echo "Restarting ${wlan[$number]}"
+			
+			# Check if it is wpa or not:
+			number_type=0
+			network_type=(`awk '/'${wlan[$number]}'/ {print $4}' "$pathi"interfaces`)
+			
+			while true; do
+				if [[ -n ${network_type[$number_type]} ]]; then
+					#echo "${network_type[$number_type]}"
+					break
+				fi
+				
+				#echo "${network_type[$number_type]}"
+				number_type=$number_type+1
+			done
+			
+			# Restart the network:
+			if [[ ${network_type[$number_type]} == "manual" ]]; then
+				# wpa_action doesn't work ... so back to old way for the moment.
+				#echo "wpa"
+				echo "Stopping ..."
+				ifdown ${wlan[$number]}
+				#wpa_action ${wlan[$number]} stop
+				sleep 5
+				
+				echo "Starting ..."
+				ifup ${wlan[$number]}
+				#wpa_action ${wlan[$number]} reload
+			else
+				#echo "other"
+				echo "Stopping ..."
+				ifdown ${wlan[$number]}
+				sleep 5
+				
+				echo "Starting ..."
+				ifup ${wlan[$number]}
+			fi
 			number=$number+1
 		done
 	fi
 	
-	# Cleaning up the variables:
+	echo "--------------------------------------------------------------------------------"
+	echo "Restarting wlan is done."
+	
+	#Cleaning up:
 	unset number
+	unset number_type
+	unset network_type
 }
 
 # Function to find all network cards:
 # Not the best way, but it works!
-function get-networks {
+function get-networks()
+{
 	# Temporary stuff to fake a lan or wlan (for debugging):
 	if [ "$use_fake_networks" = "yes" ]; then
 		lan[0]="fake-lan-0"
@@ -261,36 +385,40 @@ function get-networks {
 	number=0
 	lan_number=0
 	wlan_number=0
-	for var in ${allnetworks[*]}; do
+	
+	for var in ${allnetworks[*]}; do	
 		case "${allnetworks[$number]}" in
-		"no") # Lan network:
-		if [ "${allnetworks[$number-1]}" != "lo" ]
-			then
-			lan[$lan_number]=${allnetworks[$number-1]}
-			lan_number=$lan_number+1
-		fi		
-		;;	
-		"ESSID:"*) # Wlan networks
-			if [ "${allnetworks[$number-3]}" = "extensions." ]
-			then
-				wlan[$wlan_number]=${allnetworks[$number-2]}
-				wlan_number=$wlan_number+1
-			else
-				wlan[$wlan_number]=${allnetworks[$number-3]}
-				wlan_number=$wlan_number+1
-			fi
-		;;	
-		*) # do nothing
-		;;
+			"no")
+				# Lan network:
+				if [ "${allnetworks[$number-1]}" != "lo" ]; then
+					lan[$lan_number]=${allnetworks[$number-1]}
+					lan_number=$lan_number+1
+				fi		
+				;;	
+			"ESSID:"*)
+				# Wlan networks
+				if [ "${allnetworks[$number-3]}" = "extensions." ]; then
+					wlan[$wlan_number]=${allnetworks[$number-2]}
+					wlan_number=$wlan_number+1
+				else
+					wlan[$wlan_number]=${allnetworks[$number-3]}
+					wlan_number=$wlan_number+1
+				fi
+				;;	
+			*)
+				# do nothing
+				:
+				;;
 		esac
 		number=$number+1
 	done
+	
 	# Add network named by user:
-	if [ "$user_network_lan" != "" ]; then
+	if [ -n "$user_network_lan" ]; then
 		lan[$lan_number]="`echo "$user_network_lan"`"
 	fi
 	
-	if [ "$user_network_wlan" != "" ]; then
+	if [ -n "$user_network_wlan" ]; then
 		wlan[$wlan_number]="`echo "$user_network_wlan"`"
 	fi
 	
@@ -308,9 +436,11 @@ function get-networks {
 
 # Function to check a IP Address:
 # Not all errors where found!
-function check-ip {
+function check-ip()
+{
 	for i in 1 2 3 4; do
 		gg=$(echo $1. |cut -d "." -f $i)
+		
 		# Test if number is in the number range:
 		if [ `expr $gg '<=' 255 2> /dev/null` ]; then
 			if [ `expr $gg '>=' 0 2> /dev/null` ]; then
@@ -325,6 +455,7 @@ function check-ip {
 	for var in ${felds[*]}; do
 		number=`expr $number + 1`
 	done
+	
 	unset felds
 	unset var
 	
@@ -338,21 +469,51 @@ function check-ip {
 	fi
 }
 
+
+# Function for preparing the base interfaces file for installation:
+function generate-base-interface()
+{
+	# Prepare the interfaces:
+	echo "# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)"	 > "${pathb}interfaces-build"
+	echo ""										>> "${pathb}interfaces-build"
+	echo "# The loopback interface"							>> "${pathb}interfaces-build"
+	echo "# automatically added when upgrading"					>> "${pathb}interfaces-build"
+	echo "auto lo"									>> "${pathb}interfaces-build"
+	echo "iface lo inet loopback"							>> "${pathb}interfaces-build"
+}
+
+# Function for preparing the base wpa_supplicant.conf file for installation:
+function generate-base-wpa()
+{
+	# Prepare the wpa_supplicant.conf:
+	echo "#ctrl_interface=/var/run/wpa_supplicant"						 > "${pathb}wpa_supplicant.conf-build"
+	echo "#ctrl_interface_group=0"								>> "${pathb}wpa_supplicant.conf-build"
+	echo "#eapol_version=1"									>> "${pathb}wpa_supplicant.conf-build"
+	echo "#ap_scan=1"									>> "${pathb}wpa_supplicant.conf-build"
+	echo ""											>> "${pathb}wpa_supplicant.conf-build"
+	echo "network={"									>> "${pathb}wpa_supplicant.conf-build"
+	echo "	ssid=\"\""									>> "${pathb}wpa_supplicant.conf-build"
+	echo "	key_mgmt=NONE"									>> "${pathb}wpa_supplicant.conf-build"
+	echo "	priority=0"									>> "${pathb}wpa_supplicant.conf-build"
+	echo "}"										>> "${pathb}wpa_supplicant.conf-build"
+}
+
 # Function to set the static addresses:
-function get-static-entry {
+function get-static-entry()
+{
 	# Get IP address:
 	while true; do
 		inputbox "$title" "Please enter the IP address:
-		(example: 192.168.0.10)
-		You must enter an address here."
-	
-		if [ "$SSFT_RESULT" = "" ]; then
-			echo "#	address" >> "$pathb"interfaces-build
+(example: 192.168.0.10)
+You must enter an address here."
+
+		if [ -z "$SSFT_RESULT" ]; then
+			echo "#	address" >> "${pathb}interfaces-build"
 			continue
 		fi
-	
+		
 		if check-ip $SSFT_RESULT; then
-			echo "	address $SSFT_RESULT" >> "$pathb"interfaces-build
+			echo "	address $SSFT_RESULT" >> "${pathb}interfaces-build"
 			break
 		else
 			msgbox "$title" "This address ($SSFT_RESULT) seems to be wrong! Please try again."
@@ -362,16 +523,15 @@ function get-static-entry {
 	# Get Netmask address
 	while true; do
 		inputbox "$title" "Please enter the Netmask address:
-		(example: 255.255.255.0)
-		You must enter an address here."
-		
-		if [ "$SSFT_RESULT" = "" ]; then
+(example: 255.255.255.0)
+You must enter an address here."
+		if [ -z "$SSFT_RESULT" ]; then
 			echo "#	netmask" >> "$pathb"interfaces-build
 			continue
 		fi
 		
 		if check-ip $SSFT_RESULT; then
-			echo "	netmask $SSFT_RESULT" >> "$pathb"interfaces-build
+			echo "	netmask $SSFT_RESULT" >> "${pathb}interfaces-build"
 			break
 		else
 			msgbox "$title" "This address ($SSFT_RESULT) seems to be wrong! Please try again."
@@ -381,16 +541,15 @@ function get-static-entry {
 	# Get Network address:
 	while true; do
 		inputbox "$title" "Please enter the network address:
-		(example: 192.168.0.0)
-		You also can enter nothing (leave it blank) for no configuration."
-		
-		if [ "$SSFT_RESULT" = "" ]; then
-			echo "#	network" >> "$pathb"interfaces-build
+(example: 192.168.0.0)
+You also can enter nothing (leave it blank) for no configuration."
+		if [ -z "$SSFT_RESULT" ]; then
+			echo "#	network" >> "${pathb}interfaces-build"
 			break
 		fi
 		
 		if check-ip $SSFT_RESULT; then
-			echo "	network $SSFT_RESULT" >> "$pathb"interfaces-build
+			echo "	network $SSFT_RESULT" >> "${pathb}interfaces-build"
 			break
 		else
 			msgbox "$title" "This address ($SSFT_RESULT) seems to be wrong! Please try again."
@@ -400,16 +559,15 @@ function get-static-entry {
 	# Get Broadcast address:
 	while true; do
 		inputbox "$title" "Please enter the Broadcast IP address:
-		(example: 192.168.0.255)
-		You also can enter nothing (leave it blank) for no configuration."
-		
-		if [ "$SSFT_RESULT" = "" ]; then
-			echo "#	broadcast" >> "$pathb"interfaces-build
+(example: 192.168.0.255)
+You also can enter nothing (leave it blank) for no configuration."
+		if [ -z "$SSFT_RESULT" ]; then
+			echo "#	broadcast" >> "${pathb}interfaces-build"
 			break
 		fi
 		
 		if check-ip $SSFT_RESULT; then
-			echo "	broadcast $SSFT_RESULT" >> "$pathb"interfaces-build
+			echo "	broadcast $SSFT_RESULT" >> "${pathb}interfaces-build"
 			break
 		else
 			msgbox "$title" "This address ($SSFT_RESULT) seems to be wrong! Please try again."
@@ -419,16 +577,15 @@ function get-static-entry {
 	# Get Gateway address:
 	while true; do
 		inputbox "$title" "Please enter the Gateway IP address:
-		(example: 192.168.0.1)
-		You also can enter nothing (leave it blank) for no configuration."
-		
-		if [ "$SSFT_RESULT" = "" ]; then
-			echo "#	gateway" >> "$pathb"interfaces-build
+(example: 192.168.0.1)
+You also can enter nothing (leave it blank) for no configuration."
+		if [ -z "$SSFT_RESULT" ]; then
+			echo "#	gateway" >> "${pathb}interfaces-build"
 			break
 		fi
 		
 		if check-ip $SSFT_RESULT; then
-			echo "	gateway $SSFT_RESULT" >> "$pathb"interfaces-build
+			echo "	gateway $SSFT_RESULT" >> "${pathb}interfaces-build"
 			break
 		else
 			msgbox "$title" "This address ($SSFT_RESULT) seems to be wrong! Please try again."
@@ -437,80 +594,275 @@ function get-static-entry {
 }
 
 # Function the save the new interfaces and wpa_supplicant.conf:
-function save-files-yes-no {
+function save-files-yes-no()
+{
+	state=""
 	if `yesno "$title" "Do you want to save everything now?"`; then
 		# Backup the old interfaces:
-		if mv -f "$pathi"interfaces "$pathi"interfaces-org; then
-			file1_stat_old="was successful"
+		if mv -f "$pathi"interfaces "${pathi}interfaces-org"; then
+			file1_stat_old="was SUCCESSFUL!"
 		else
-			file1_stat_old="failed"
+			state="fehler"
+			file1_stat_old="FAILED!"
 		fi
-
+		
 		# Install the new inferfaces:
-		if mv -f "$pathb"interfaces-build "$pathi"interfaces; then
-			file1_stat_new="was successful"
+		if mv -f "${pathb}interfaces-build" "${pathi}interfaces"; then
+			file1_stat_new="was SUCCESSFUL!"
 		else
-			file1_stat_new="failed"
+			state="fehler"
+			file1_stat_new="FAILED!"
 		fi
-
+		
 		# Backup the old wpa_supplicant.conf:
-		if mv -f "$pathw"wpa_supplicant.conf "$pathw"wpa_supplicant.conf-org; then
-			file2_stat_old="was successful"
+		if mv -f "${pathw}wpa_supplicant.conf" "${pathw}wpa_supplicant.conf-org"; then
+			file2_stat_old="was SUCCESSFUL!"
 		else
-			file2_stat_old="failed"
+			state="fehler"
+			file2_stat_old="FAILED!"
 		fi
-
+		
 		# Install the new wpa_supplicant.conf:
-		if mv -f "$pathb"wpa_supplicant.conf-build "$pathw"wpa_supplicant.conf; then
-			file2_stat_new="was successful"
+		if mv -f "${pathb}wpa_supplicant.conf-build" "${pathw}wpa_supplicant.conf"
+		then
+			file2_stat_new="was SUCCESSFUL!"
 		else
-			file2_stat_new="failed"
+			state="fehler"
+			file2_stat_new="FAILED!"
 		fi
+		
+	# Return the stats of the install:
+	if [[ -n $state ]]; then
+		msgbox "$title" "Atention!
 
-		# Return the stats of the install:
-		echo "Backup of interfaces: $file1_stat_old
-		Installation of new interfaces: $file1_stat_new
-		Backup of wpa_supplicant.conf: $file2_stat_old
-		Installation of new wpa_supplicant.conf: $file2_stat_new"
-		#msgbox "$title" "Backup of interfaces: $file1_stat_old
-		#Installation of new interfaces: $file1_stat_new
-		#-------------------------------------------
-		#Backup of wpa_supplicant.conf: $file2_stat_old
-		#Installation of new wpa_supplicant.conf: $file2_stat_new"
-
+Backup of interfaces: $file1_stat_old
+Installation of new interfaces: $file1_stat_new
+Backup of wpa_supplicant.conf: $file2_stat_old
+Installation of new wpa_supplicant.conf: $file2_stat_new"
+	fi
+	
 		return 0
 	else
-		# Don't save the new config ... so delet it!
-		rm -f "$pathb"interfaces-build
-		rm -f "$pathb"wpa_supplicant.conf-build
-
+		# Don't save the new config ... so delete it!
+		rm -f	"${pathb}interfaces-build" \
+			"${pathb}wpa_supplicant.conf-build"
 		return 1
 	fi
-
+	
 	# Cleaning up the variables:
 	unset file1_stat_old
 	unset file1_stat_new
 	unset file2_stat_old
 	unset file2_stat_new
+	
 	# Ask for restarting the networks:
 	#restart-lan-networks
 	#restart-wlan-networks
 }
 
-function get_current_configuration {
+function get_current_configuration()
+{
 	# Get the current interfaces:
+	typeset -i state
+	state=0
+	missing_i="false"
+	missing_w="false"
+	
 	if `cp -f "$pathi"interfaces "$pathb"interfaces-build`; then
-		echo "Getting the current interfaces was successful."
+		state=$state+1
 	else
-		echo "Getting the current interfaces failed."
+		missing_i="true"
+		state=0
 	fi
 	
 	# Get the current wpa_supplicant.conf:
-	if `cp -f "$pathw"wpa_supplicant.conf "$pathb"wpa_supplicant.conf-build`; then
-		echo "Getting the current wpa_supplicant.conf was successful."
+	if `cp -f "${pathw}wpa_supplicant.conf" "${pathb}wpa_supplicant.conf-build"`; then
+		state=$state+1
 	else
-		echo "Getting the current wpa_supplicant.conf failed."
+		missing_w="true"
+		state=0
 	fi
+	
+	if [[ "$state" != "2" ]]; then
+		if yesno "Text" "Unable to copy the files!
+
+Should i install a new base for the missing file and continue?.
+(You can always install a clean config over the third point of the main menue.)"; then
+			if [[ $missing_i == "true" ]]; then
+				generate-base-interface
+			fi
+			
+			if [[ $missing_w == "true" ]]; then
+				generate-base-wpa
+			fi
+			
+			return 1
+		else
+			return 0
+		fi
+	fi
+	
+	unset state
+	unset missing_w
+	unset missing_i
+	
+	return 1
+}
+
+# Function to delete a network from the interfaces:
+function delete-if-exist()
+{
+	# Prepare everything for deleting:
+	cp "$pathb"interfaces-build "$pathb"interfaces-build2
+	typeset -i number_del from_line_number to_line_number
+	
+	# Delete the iface line with the full configuration:
+	if [[ `grep -n 'iface '$1' inet' "$pathb"interfaces-build2|awk '{print $2}'` == "$1" ]]; then
+		from_line_number=(`grep -n 'iface '$1'' "$pathb"interfaces-build2|cut -d ":" -f1`)
+		to_line_number=$from_line_number+1
+		while true; do
+			line_name=(`sed -n ''$to_line_number' p' "$pathb"interfaces-build2|awk '{print $1}'`)
+			
+			# echo $line_name
+			case "$line_name" in
+				"")
+					break
+					;;
+				"iface")
+					to_line_number=$to_line_number-1
+					break
+					;;
+				"allow-hotplug")
+					to_line_number=$to_line_number-1
+					break
+					;;
+				*)
+					to_line_number=$to_line_number+1
+					;;
+			esac
+		done
+		
+		sed ''$from_line_number','$to_line_number' d' "${pathb}interfaces-build2" > "${pathb}interfaces-build"
+		cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+	fi
+	
+	# Now delete the start line:
+	while true; do
+		line_to_delete=(`grep -n ''$1'' "$pathb"interfaces-build2|cut -d ":" -f1`)
+		#echo $line_to_delete
+		
+		if [[ -z $line_to_delete ]]; then
+			break
+		fi
+		
+		line_name=(`sed -n ''$line_to_delete' p' "${pathb}interfaces-build2"|awk '{print $1}'`)
+		case "$line_name" in
+			"auto")
+				#echo "auto"
+				if [[ -z `sed -n ''$line_to_delete' p' "${pathb}interfaces-build2"|awk '{print $3}'` ]]; then
+					# Remove line:
+					sed ''$line_to_delete' d' "$pathb"interfaces-build2 > "${pathb}interfaces-build"
+					cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+					number_del=$number_del+1
+				else
+					# Remove word:
+					sed ''$line_to_delete' s/'$1'//' "${pathb}interfaces-build2" > "${pathb}interfaces-build"
+					cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+					number_del=$number_del+1
+				fi
+				;;
+			"allow-hotplug")
+				#echo "hotplug"
+				if [[ -z `sed -n ''$line_to_delete' p' "${pathb}interfaces-build2"|awk '{print $3}'` ]]; then
+					# Remove line:
+					sed ''$line_to_delete' d' "${pathb}interfaces-build2" > "${pathb}interfaces-build"
+					cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+					number_del=$number_del+1
+				else
+					# Remove word:
+					sed ''$line_to_delete' s/'$1'//' "${pathb}interfaces-build2" > "${pathb}interfaces-build"
+					cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+					number_del=$number_del+1
+				fi
+				;;	
+			*)
+				#echo "other"
+				# Remove line:
+				sed ''$line_to_delete' d' "${pathb}interfaces-build2" > "${pathb}interfaces-build"
+				cp -f "${pathb}interfaces-build" "${pathb}interfaces-build2"
+				number_del=$number_del+1
+				;;
+		esac
+	done
+	
+	rm -f "${pathb}interfaces-build2"
+	
+	unset number_del
+	unset line_to_delete
+	unset line_name
+	unset from_line_number
+	unset to_line_number
+}
+
+# Function to delete a wpa-roam network:
+function delete-if-exist2()
+{
+	# Delete this name from the interfaces:
+	delete-if-exist $1
+	
+	# Delete this name from the wpa_supplicant:
+	cp -f "${pathb}wpa_supplicant.conf-build" "${pathb}wpa_supplicant.conf-build2"
+	typeset -i number_del from_line_number to_line_number
+	
+	# Delete the full network part:
+	line_middle=(`grep -n 'ssid="'$1'"' "${pathb}wpa_supplicant.conf-build2"|cut -d ":" -f1`)
+	#echo $line_middle
+	
+	# Detect the "from" line number:
+	from_line_number=`echo "$line_middle"`
+	
+	while true; do
+		line_name=(`sed -n ''$from_line_number' p' "$pathb"wpa_supplicant.conf-build2|awk '{print $1}'`)
+		
+		if [[ "$line_name" == "network={" ]]; then
+			#echo $from_line_number
+			break
+		fi
+		
+		from_line_number=$from_line_number-1
+	done
+	
+	# Detect the "to" line number:
+	to_line_number=`echo "$line_middle"`
+	
+	while true; do
+		line_name=(`sed -n ''$to_line_number' p' "$pathb"wpa_supplicant.conf-build2|awk '{print $1}'`)
+		
+		if [[ "$line_name" == "}" ]]; then
+			to_line_number=$to_line_number+1
+			
+			if [[ -n `sed -n ''$to_line_number' p' "$pathb"wpa_supplicant.conf-build2|awk '{print $1}'` ]]; then
+				to_line_number=$to_line_number-1
+			fi
+			
+			#echo $to_line_number
+			break
+		fi
+		
+		to_line_number=$to_line_number+1
+	done
+	
+	#Now really delete the lines:
+	sed ''$from_line_number','$to_line_number' d' "${pathb}wpa_supplicant.conf-build2" > "${pathb}wpa_supplicant.conf-build"
+	cp -f "${pathb}wpa_supplicant.conf-build" "${pathb}wpa_supplicant.conf-build2"
+	
+	# Cleaning up:
+	rm -f "${pathb}interfaces-build2"
+	
+	unset number_del
+	unset line middle
+	unset from_line_number
+	unset to_line_number
 }
 
 ####################################################################################################################################
@@ -519,29 +871,31 @@ function get_current_configuration {
 ####################################################################################################################################
 ####################################################################################################################################
 
-# Function to check is a network name is already used:
-function check-wlan-name {
-	testssid=(`awk '/'$1'/ {print $2}' "$pathb"interfaces-build`)
+# Function to check if a network name is already used:
+function check-wlan-name()
+{
+	testssid=(`awk '/'$1'/ {print $2}' "${pathb}interfaces-build"`)
 	typeset -i number
 	number=0
-
+	
 	for var in ${testssid[*]}; do
-		if [ "${testssid[$number]}" = "$1" ]
-		then
+		if [ "${testssid[$number]}" = "$1" ]; then
 			unset number
 			unset testssid
 			return 1
 		fi
+		
 		number=$number+1
 	done
-
+	
 	# Cleaning up the variables:
 	unset number
 	unset testssid
 }
 
 # Function to ask what type the new wlan should be:
-function get-wlan-type {
+function get-wlan-type()
+{
 	select_single "$title" "What type do you want to use for $1}:" "1_DHCP 2_STATIC"
 
 	case "$SSFT_RESULT" in
@@ -554,10 +908,9 @@ function get-wlan-type {
 			echo "iface $1 inet static" >> "$pathb"interfaces-build
 			get-static-entry
 			;;
-	*)
-		 # No input -> DHCP
-		echo "iface $1 inet dhcp" >> "$pathb"interfaces-build
-		;;
+		*) # No input -> DHCP
+			echo "iface $1 inet dhcp" >> "$pathb"interfaces-build
+			;;
 	esac
 }
 
@@ -565,131 +918,160 @@ function get-wlan-type {
 function new-wlan {
 	while true; do
 		select_single "$title" "Please select the type for the wireless network:" "1_Open_(unencrypted)_network 2)_WEP_encrypted_network 3)_WPA-PSK_encrypted_network 4)_Enter_no_more_network."
+		
 		case "$SSFT_RESULT" in
 			"1"*)
 				# Open (unencrypted) network
 				while true; do
 					inputbox "$title" "Please enter the name of the network"
-			
+					
+					if [[ $SSFT_RESULT == "" ]]; then
+						return 1
+					fi
+					
 					if check-wlan-name $SSFT_RESULT; then
 						ssid=`echo $SSFT_RESULT`
 						break
 					else
-						msgbox "$title" "Another network with this name already exists. Please try again with another name."
+						if yesno "$title" "Another network with this name already exists. Should the old network be overwrite? (Otherwise you can try another name)"; then
+							delete-if-exist2 $ssid
+						fi
 					fi
 				done
-				inputbox "$title" "Please enter the priority of the network (0 to 100)"
+				
+				inputbox "$title" "Please enter the priority of the network (0 to 100)
+If you leave it blank the priority is set to 100"
+
 				priority=`echo $SSFT_RESULT`
-			
+				if [[ -z "$priority" ]]; then
+					priority="100"
+				fi
+				
 				# Write everything to the file:
 				# Warning: changing legth of this output must be also correctet in the deleting part!
-				echo "
-# Identity: "$ssid"_open_$priority
-network={
-	ssid=\"$ssid\"
-	id_str=\"$ssid\"
-	scan_ssid=1
-	key_mgmt=NONE
-	priority=$priority
-}
-" >> "$pathb"wpa_supplicant.conf-build
+				echo ""					>> "${pathb}wpa_supplicant.conf-build"
+				echo "network={"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	ssid=\"$ssid\""			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	id_str=\"$ssid\""		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	scan_ssid=1"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	key_mgmt=NONE"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "}"				>> "${pathb}wpa_supplicant.conf-build"
+				
 				get-wlan-type $ssid
 				;;
 			"2"*)
-				 # WEP - encrypted network
+				# WEP - encrypted network
 				while true; do
 					inputbox "$title" "Please enter the name of the network"
+					
+					if [[ -z $SSFT_RESULT ]]; then
+						return 1
+					fi
+					
 					if check-wlan-name $SSFT_RESULT; then
 						ssid=`echo $SSFT_RESULT`
 						break
 					else
-						msgbox "$title" "Another network with this name already exists. Please try again with another name."
+						if yesno "$title" "Another network with this name already exists. Should the old network be overwrite? (Otherwise you can try another name)"; then
+							delete-if-exist2 $ssid
+						fi
 					fi
 				done
-			
+				
 				inputbox "$title" "Please enter the WEP-Key1:"
-				key0=`echo $SSFT_RESULT`
-			
+				key0="$SSFT_RESULT"
+				
 				inputbox "$title" "Please enter the WEP-Key2:"
-				key1=`echo $SSFT_RESULT`
-			
+				key1="$SSFT_RESULT"
+				
 				inputbox "$title" "Please enter the WEP-Key3:"
-				key2=`echo $SSFT_RESULT`
-			
+				key2="$SSFT_RESULT"
+				
 				inputbox "$title" "Please enter the WEP-Key4:"
-				key3=`echo $SSFT_RESULT`
-			
-				inputbox "$title" "Please enter the priority of the network (0 to 100)"
-				priority=`echo $SSFT_RESULT`
-			
+				key3="$SSFT_RESULT"
+				
+				inputbox "$title" "Please enter the priority of the network (0 to 100)
+If you leave it blank the priority is set to 100"
+				priority="$SSFT_RESULT"
+				
+				if [[ -z $priority ]]; then
+					priority="100"
+				fi
+				
 				# Write everything to the file:
 				# Warning: changing legth of this output must be also correctet in the deleting part!
-				echo "
-# Identity: "$ssid"_wep_$priority
-network={
-	ssid=\"$ssid\"
-	id_str=\"$ssid\"
-	scan_ssid=1
-	key_mgmt=NONE
-	wep_key0=$key0
-	wep_key1=$key1
-	wep_key2=$key2
-	wep_key3=$key3
-	wep_tx_keyidx=0
-	priority=$priority
-}
-" >> "$pathb"wpa_supplicant.conf-build
+				echo ""					>> "${pathb}wpa_supplicant.conf-build"
+				echo "network={"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	ssid=\"$ssid\""			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	id_str=\"$ssid\""		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	scan_ssid=1"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	key_mgmt=NONE"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	wep_key0=$key0"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	wep_key1=$key1"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	wep_key2=$key2"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	wep_key3=$key3"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	wep_tx_keyidx=0"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "}"				>> "${pathb}wpa_supplicant.conf-build"
+				
 				get-wlan-type $ssid
 				;;
 			"3"*)
 				# WPA-PSK - encrypted network
-				while true;	do
+				while true; do
 					inputbox "$title" "Please enter the name of the network"
-		
+					
+					if [[ -z $SSFT_RESULT ]]; then
+						return 1
+					fi
+					
 					if check-wlan-name $SSFT_RESULT; then
 						ssid=`echo $SSFT_RESULT`
 						break
 					else
-						msgbox "$title" "Another network with this name already exists. Please try again with another name."
+						if yesno "$title" "Another network with this name already exists. Should the old network be overwrite? (Otherwise you can try another name)"; then
+							delete-if-exist2 $ssid
+						fi
 					fi
 				done
-
 				inputbox "$title" "Please enter the WPA-Key:"
-				key0=`echo $SSFT_RESULT`
-			
-				inputbox "$title" "Please enter the priority of the network (0 to 100)"
-				priority=`echo $SSFT_RESULT`
-	
+				key0="$SSFT_RESULT"
+				
+				inputbox "$title" "Please enter the priority of the network (0 to 100)
+If you leave it blank the priority is set to 100"
+				priority="$SSFT_RESULT"
+				
+				if [[ "$priority" == "" ]]; then
+					priority="100"
+				fi
+				
 				# Write everything to the file:
 				# Warning: changing legth of this output must be also correctet in the deleting part!
-				echo "
-# Identity: "$ssid"_wpa_$priority
-network={
-	ssid=\"$ssid\"
-	id_str=\"$ssid\"
-	scan_ssid=1
-	proto=WPA
-	key_mgmt=WPA-PSK
-	pairwise=CCMP TKIP
-	group=CCMP TKIP WEP104 WEP40
-	psk=\"$key0\"
-	priority=$priority
-}
-" >> "$pathb"wpa_supplicant.conf-build
+				echo ""					>> "${pathb}wpa_supplicant.conf-build"
+				echo "network={"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	ssid=\"$ssid\""			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	id_str=\"$ssid\""		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	scan_ssid=1"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	proto=WPA"			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	key_mgmt=WPA-PSK"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	pairwise=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "	group=CCMP TKIP WEP104 WEP40"	>> "${pathb}wpa_supplicant.conf-build"
+				echo "	psk=\"$key0\""			>> "${pathb}wpa_supplicant.conf-build"
+				echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
+				echo "}"				>> "${pathb}wpa_supplicant.conf-build"
+				
 				get-wlan-type $ssid
-				;;
-			"4"*)
-				# Enter no more network
-				break
 				;;
 			*)
 				# no input
 				break
-				;;
+			;;
 		esac
+		
 	done
-
-	echo >> "$pathb"interfaces-build
+	
+	echo >> "${pathb}interfaces-build"
 	
 	# Cleaning up the variables:
 	unset ssid
@@ -701,13 +1083,16 @@ network={
 }
 
 # Function to prepare everything for adding a new network:
-function add-wireless-network {
+function add-wireless-network()
+{
 	# Get the current files:
-	get_current_configuration
+	if get_current_configuration; then 
+		return 1
+	fi
 	
 	# Get the new wlan:
 	new-wlan
-	echo  >> "$pathb"interfaces-build
+	echo  >> "${pathb}interfaces-build"
 	
 	# Ask if the new config should be saved:
 	if save-files-yes-no; then
@@ -716,434 +1101,32 @@ function add-wireless-network {
 	fi
 }
 
-####################################################################################################################################
-####################################################################################################################################
-## 3 functions for basic install: ##################################################################################################
-####################################################################################################################################
-####################################################################################################################################
-
-# Function for preparing the base files for installation:
-function generate-base {
-	# Prepare the interfaces:
-	echo "# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
-
-# The loopback interface
-# automatically added when upgrading
-auto lo
-iface lo inet loopback
-" > "$pathb"interfaces-build
-
-	# Prepare the wpa_supplicant.conf:
-	echo "#ctrl_interface=/var/run/wpa_supplicant
-#ctrl_interface_group=0
-#eapol_version=1
-#ap_scan=1
-
-network={
-	ssid=\"\"
-	key_mgmt=NONE
-	priority=0
-}
-"> "$pathb"wpa_supplicant.conf-build
-}
-
-# Function to install all lan networks:
-function generate-lan {
-	select_single "$title" "What type do you want to use for $1:" "1_DHCP 2_STATIC 3_No_configuration"
-
-	case "$SSFT_RESULT" in
-		"1"*)
-			# DHCP:
-			echo "# DHCP-Lan - network: $1
-allow-hotplug $1
-iface $1 inet dhcp
-" >> "$pathb"interfaces-build
-			;;
-		"2"*)
-			# STATIC:
-			echo "# STATIC-Lan - network: $1
-allow-hotplug $1
-iface $1 inet static" >> "$pathb"interfaces-build
-	get-static-entry
-	echo >> "$pathb"interfaces-build
-			;;
-		"3"*)
-			# no configuration:
-			;;
-		*)
-			# No input -> no configuration
-			;;
-	esac
-}
-
-# Function for adding wep and open networks to the interfaces
-function get-wep-entry {
-	#wireless-essid:
-	while true; do
-		inputbox "$title" "Please enter ESSID for $1.
-		(example: homelan)
-		You must enter a name here!"
-		if [ "$SSFT_RESULT" != "" ]; then
-			echo "	wireless-essid $SSFT_RESULT" >> "$pathb"interfaces-build
-			break
-		fi
-	done
-	
-	#wireless-mode:
-	select_single "$title" "Please select the mode for $1:" "1_Managed_(default) 2_Ad-Hoc 3_Master 4_Repeater 5_Secondary 6_Auto"
-	case "$SSFT_RESULT" in
-		"1"*)
-			# Managed:
-			echo "	wireless-mode managed" >> "$pathb"interfaces-build
-			;;
-		"2"*)
-			# Ad-Hoc:
-			echo "	wireless-mode ad-hoc" >> "$pathb"interfaces-build
-			;;
-		"3"*)
-			# Master
-			echo "	wireless-mode master" >> "$pathb"interfaces-build
-			;;
-		"4"*)
-			# Repeater
-			echo "	wireless-mode repeater" >> "$pathb"interfaces-build
-			;;
-		"5"*)
-			# Secondary
-			echo "	wireless-mode secondary" >> "$pathb"interfaces-build
-			;;
-		"6"*)	# Auto
-			echo "	wireless-mode auto" >> "$pathb"interfaces-build
-			;;
-		*)	# No input -> managed
-			echo "	wireless-mode managed" >> "$pathb"interfaces-build
-			;;
-	esac
-	
-	#wireless-channel:
-	inputbox "$title" "Please enter channel number for $1.
-(example: 7)
-You also can leave it blank for automatic choice."
-	if [ "$SSFT_RESULT" != "" ]; then
-		echo "	wireless-channel $SSFT_RESULT" >> "$pathb"interfaces-build
-	else
-		echo "#	wireless-channel" >> "$pathb"interfaces-build
-	fi
-	
-	#wireless-nwid:
-	inputbox "$title" "Please enter the NWID (Cell Identifier) for $1.
-You also can leave it blank for automatic choice."
-	if [ "$SSFT_RESULT" != "" ]; then
-		echo "	wireless-nwid $SSFT_RESULT" >> "$pathb"interfaces-build
-	else
-		echo "#	wireless-nwid" >> "$pathb"interfaces-build
-	fi
-	
-	#wireless-freq:
-	inputbox "$title" "Please enter the frequence for $1.
-	(example: 2.412G)
-	You also can leave it blank for automatic choice."
-	if [ "$SSFT_RESULT" != "" ]; then
-		echo "	wireless-freq $SSFT_RESULT" >> "$pathb"interfaces-build
-	else
-		echo "#	wireless-freq" >> "$pathb"interfaces-build
-	fi
-	
-	#wireless-key:
-	select_single "$title" "How do you want to handle the key for $1?" "1_No_key_(open_network) 2_Enter_key_in_the_interfaces_file 3_Enter_key_in_a_new_keyfile 4_Use_key_from_the_existing_keyfile_(/etc/network/wep.$1)"
-	case "$SSFT_RESULT" in
-		"1"*)
-			# No key:
-			echo "#	wireless-key" >> "$pathb"interfaces-build
-			;;
-		"2"*)
-			# Key in the interfaces:
-			inputbox "$title" "Please enter WEP key.
-You also can leave it blank for automatic choice."
-			if [ "$SSFT_RESULT" != "" ]; then
-				echo "	wireless-key $SSFT_RESULT" >> "$pathb"interfaces-build
-				#echo "	pre-up KEY=$SSFT_RESULT && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
-			fi
-			;;
-		"3"*)
-			# Key in a new wep.* file
-			inputbox "$title" "Please enter WEP key for the /etc/network/wep.$1 file:"
-			if [ "$SSFT_RESULT" != "" ]; then
-				echo "$SSFT_RESULT" >> /etc/network/wep.$1
-				chmod 700 /etc/network/wep.$1
-				echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
-			fi
-			;;
-		"4"*)
-			# Use Key from existing wep.* file
-			echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
-			;;
-		*)
-			# No input -> no key:
-			echo "#	wireless-key" >> "$pathb"interfaces-build
-			;;
-	esac
-}
-
-# Function to install all wlan networks:
-function generate-wlan {
-	select_single "$title" "What type do you want to use for $1
-(If wpa-roam doesn't work use ndiswrapper for this network device.)" "1_WPA-ROAM_(multi_network) 2_DHCP_(single_network) 3_STATIC_(single_network) 4_No_configuration"
-	case "$SSFT_RESULT" in
-		"1"*)
-			# WPA-ROAM:
-			echo "# WPA-Wlan - network: $1
-allow-hotplug $1
-iface $1 inet manual
-	wpa-roam /etc/wpa_supplicant.conf
-" >> "$pathb"interfaces-build
-
-			# Ask for wlan networks for wpa-roam:
-			new-wlan
-			;;
-		"2"*)
-			# DHCP
-			echo "# DHCP-Wlan - network: $1
-allow-hotplug $1
-iface $1 inet dhcp" >> "$pathb"interfaces-build
-			get-wep-entry $1
-			echo >> "$pathb"interfaces-build
-			;;
-		"3"*)
-			# STATIC
-			echo "# STATIC-Wlan - network: $1
-allow-hotplug $1
-iface $1 inet static" >> "$pathb"interfaces-build
-			get-static-entry
-			get-wep-entry $1
-			echo >> "$pathb"interfaces-build
-			;;
-		"4"*)
-			# no configuration:
-			;;
-		*)
-			# No input -> no configuration
-			;;
-	esac
-}
-
-# Function to controll the installation of the base:
-function basic-install {
-	typeset -i number
-	
-	# Prepare files:
-	generate-base
-	
-	# Check if a lan exist:
-	if [ "${lan[0]}" != "" ]; then
-		# Get name of cards to configure:
-		select_more "$title" "Please choose the lan cards you want to configure" "`
-		number=0
-		for var in ${lan[*]}; do
-			echo "${lan[$number]}"
-			number=$number+1
-		done
-		`"
-		# Save the result:
-		lan2=(`echo "${SSFT_RESULT}"`)
-		# Install all selected lan cards:
-		number=0
-		for var in ${lan2[*]}; do
-			generate-lan ${lan2[$number]}
-			number=$number+1
-		done
-	fi
-	
-	# Check if a wlan exist:
-	if [ "${wlan[0]}" != "" ]; then
-	# Install all wlan cards:
-		# Get name of cards to configure:
-		select_more "$title" "Please choose the wlan cards you want to configure" "`
-		number=0
-		for var in ${wlan[*]}; do
-			echo "${wlan[$number]}"
-			number=$number+1
-		done
-		`"
-		# Save the result:
-		wlan2=(`echo "${SSFT_RESULT}"`)
-		# Install all selected lan cards:
-		number=0
-		for var in ${wlan2[*]}; do
-			generate-wlan ${wlan2[$number]}
-			number=$number+1
-		done
-	fi
-	unset lan2
-	unset wlan2
-	
-	# Ask if files should be saved:
-	if save-files-yes-no; then
-		if [ "${lan[0]}" != "" ]; then
-			restart-lan-networks
-		fi
-	
-		if [ "${wlan[0]}" != "" ]; then
-			restart-wlan-networks
-		fi
-	fi
-}
-
-####################################################################################################################################
-####################################################################################################################################
-## 4 functions for other points of the main menu: #################################################################################
-####################################################################################################################################
-####################################################################################################################################
-
-# Function to restore the backup files:
-function restore-backup-files {
-	# Restore interfaces:
-	if mv -f "$pathi"interfaces-org "$pathi"interfaces; then
-		file1_stat="was successful"
-	else
-		file1_stat="failed"
-	fi
-	
-	# Restore wpa_supplicant.conf:
-	if mv -f "$pathw"wpa_supplicant.conf-org "$pathw"wpa_supplicant.conf; then
-		file2_stat="was successful"
-	else
-		file2_stat="failed"
-	fi
-	
-	# Return if it worked:
-	msgbox "Text" "Restore of interfaces: $file1_stat
-and
-Restore of wpa_supplicant.conf: $file2_stat"
-
-	# Cleaning up the variables:
-	unset file1_stat
-	unset file2_stat
-}
-
-# Function for displaying all configured network cards:
-function show_all_cards {
-	msgbox "$title" "The following networkcards are configured:
-
-`awk '/network:/ {print}' "$pathi"interfaces`"
-}
-
-# Function for displaying all wlans from the wpa_supplicant.conf:
-function show_all_wlans {
-	# Here all the data is collected from the file:
-	existing_wlans=(`awk '/Identity:/ {print $3}' "$pathw"wpa_supplicant.conf`)
-	
-	# Here the collected data is split up:
-	typeset -i number
-	number=0
-	for var in ${existing_wlans[*]}; do
-		ssid_list[$number]=`echo "${existing_wlans[$number]}"|awk -F_ '{print $1}'`
-		type_list[$number]=`echo "${existing_wlans[$number]}"|awk -F_ '{print $2}'`
-		priority_list[$number]=`echo "${existing_wlans[$number]}"|awk -F_ '{print $3}'`
-		number=$number+1
-	done
-	
-	# Show all networks with type and priority:
-	msgbox "$title" "The following networks are installed:
-
-`
-	number=0
-	for var in ${existing_wlans[*]}; do
-		number=$number+1
-		echo "$number)	Name: ${ssid_list[$number-1]}
-		Type: ${type_list[$number-1]}
-		Priority: ${priority_list[$number-1]}
-				"
-	done
-	`"
-
-	# Cleaning up the variables:
-	unset existing_wlans
-	unset ssid_list
-	unset type_list
-	unset priority_list
-	unset number
-}
-
 # Function for removing a wlan network:
-function remove_existing_wlan {
+function remove_existing_wlan()
+{
+	if get_current_configuration; then 
+		return 1
+	fi
+	
 	typeset -i line_number from_line_number to_line_number
 	
 	# Get the names of all wlan networks:
-	wlan_list=(`awk '/Identity:/ {print $3}' "$pathw"wpa_supplicant.conf|awk -F_ '{print $1}'`)
+	wlan_list=(`grep -n 'ssid="' "$pathw"wpa_supplicant.conf|awk -F\" '{print $2}'`)
 	
 	# Get the name of the network to delete:
 	typeset -i number
-	select_single "$title" "Which wlan should be deleted? No Input abort the deleting part." "
-	`
-	number=0
-	for var in ${wlan_list[*]}; do
-		echo "${wlan_list[$number]}"
-		number=$number+1
-	done
+	select_single "$title" "Which wlan should be deleted? No Input abort the deleting part." "`
+		#XXX: please make function
+		number=0
+		
+		for var in ${wlan_list[*]}; do
+			echo "${wlan_list[$number]}"
+			number=$number+1
+		done
 	`"
 	
-	if [ "$SSFT_RESULT" != "" ]; then
-		# Delete the network from the wpa_supplicant.conf:
-		line_number=(`grep -n ''$SSFT_RESULT'' "$pathw"wpa_supplicant.conf|awk '/Identity:/ {print $1}'|cut -d ":" -f1`)
-		line_name=(`grep -n ''$SSFT_RESULT'' "$pathw"wpa_supplicant.conf|awk '/Identity:/ {print $3}'|awk -F_ '{print $1}'`)
-		line_type=(`grep -n ''$SSFT_RESULT'' "$pathw"wpa_supplicant.conf|awk '/Identity:/ {print $3}'|awk -F_ '{print $2}'`)
-	
-		# Check if it is the real name:
-		number=0
-		for var in ${line_name[*]}; do
-			if [ "${line_name[$number]}" = "$SSFT_RESULT" ]; then
-				from_line_number=`echo ${line_number[$number]}`
-				break
-			fi
-	
-			number=$number+1
-		done
-	
-		# Now delete it:
-		case "${line_type[$number]}" in
-			"open")
-				# Delete Identity line and 9 more lines:
-				to_line_number=$line_number+9
-				sed ''$from_line_number','$to_line_number' d' "$pathw"wpa_supplicant.conf > "$pathb"wpa_supplicant.conf-build
-				;;
-			"wep")
-				# Delete Identity line and 14 more lines:
-				to_line_number=$line_number+14
-				sed ''$from_line_number','$to_line_number' d' "$pathw"wpa_supplicant.conf > "$pathb"wpa_supplicant.conf-build
-				;;
-			"wpa")
-				# Delete Identity line and 13 more lines:
-				to_line_number=$line_number+13
-				sed ''$from_line_number','$to_line_number' d' "$pathw"wpa_supplicant.conf > "$pathb"wpa_supplicant.conf-build
-				;;
-			*)
-				;;
-		esac
-		
-		# Delete the lines from the interfaces:
-		line_number=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|cut -d ":" -f1`)
-		line_name=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|awk '{print $2}'`)
-		line_type=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|awk '{print $4}'`)
-	
-		# Check if it is the real name:
-		number=0
-		for var in ${line_number[*]}; do
-			if [ "${line_name[$number]}" = "$SSFT_RESULT" ]; then
-				from_line_number=`echo ${line_number[$number]}`
-				break
-			fi
-	
-			number=$number+1
-		done
-	
-		# Now delete it:
-		if [ "${line_type[$number]}" = "dhcp" ]; then
-			sed ''$from_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-		else
-			to_line_number=$from_line_number+5
-			sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-		fi
+	if [ -n "$SSFT_RESULT" ]; then
+		delete-if-exist2 $SSFT_RESULT
 	fi
 	
 	# Ask it everything should be saved:
@@ -1164,12 +1147,338 @@ function remove_existing_wlan {
 	unset number
 }
 
-# Function for editing_one_network:
-function edit_one_network {
-	typeset -i number from_line_number to_line_number
+####################################################################################################################################
+####################################################################################################################################
+## 3 functions for basic install: ##################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+# Function to install all lan networks:
+function generate-lan {
+	select_single "$title" "What type do you want to use for $1:" "1_DHCP 2_STATIC 3_No_configuration"
+	case "$SSFT_RESULT" in
+		"1"*)
+			# DHCP:
+			echo "allow-hotplug $1"			>> "${pathb}interfaces-build"
+			echo "iface $1 inet dhcp"		>> "${pathb}interfaces-build"
+			;;
+		"2"*)
+			# STATIC:
+			echo "allow-hotplug $1"			>> "${pathb}interfaces-build"
+			echo "iface $1 inet static"		>> "${pathb}interfaces-build"
+			
+			get-static-entry
+			
+			echo >> "${pathb}interfaces-build"
+			;;
+		"3"*)
+			# no configuration:
+			:
+			;;
+		*)
+			# No input -> no configuration
+			:
+			;;
+	esac
+}
+
+# Function for adding wep and open networks to the interfaces
+function get-wep-entry {
+	#wireless-essid:
+	while true; do
+		inputbox "$title" "Please enter ESSID for $1.
+(example: homelan)
+You must enter a name here!"
+
+		if [ -n "$SSFT_RESULT" ]; then
+			echo "	wireless-essid $SSFT_RESULT" >> "${pathb}interfaces-build"
+			break
+		fi
+	done
 	
+	#wireless-mode:
+	select_single "$title" "Please select the mode for $1:" "1_Managed_(default) 2_Ad-Hoc 3_Master 4_Repeater 5_Secondary 6_Auto"
+	
+	case "$SSFT_RESULT" in
+		"1"*)
+			# Managed:
+			echo "	wireless-mode managed" >> "${pathb}interfaces-build"
+			;;
+		"2"*)
+			# Ad-Hoc:
+			echo "	wireless-mode ad-hoc" >> "${pathb}interfaces-build"
+			;;
+		"3"*)
+			# Master
+			echo "	wireless-mode master" >> "${pathb}interfaces-build"
+			;;
+		"4"*)
+			# Repeater
+			echo "	wireless-mode repeater" >> "${pathb}interfaces-build"
+			;;
+		"5"*)
+			# Secondary
+			echo "	wireless-mode secondary" >> "${pathb}interfaces-build"
+			;;
+		"6"*)
+			# Auto
+			echo "	wireless-mode auto" >> "${pathb}interfaces-build"
+			;;
+		*)
+			# No input -> managed
+			echo "	wireless-mode managed" >> "${pathb}interfaces-build"
+			;;
+	esac
+	
+	#wireless-channel:
+	inputbox "$title" "Please enter channel number for $1.
+(example: 7)
+You also can leave it blank for automatic choice."
+
+	if [ -n "$SSFT_RESULT" != "" ]; then
+		echo "	wireless-channel $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-channel" >> "$pathb"interfaces-build
+	fi
+	
+	#wireless-nwid:
+	inputbox "$title" "Please enter the NWID (Cell Identifier) for $1.
+You also can leave it blank for automatic choice."
+	if [ -n "$SSFT_RESULT" ]; then
+		echo "	wireless-nwid $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-nwid" >> "$pathb"interfaces-build
+	fi
+	
+	#wireless-freq:
+	inputbox "$title" "Please enter the frequence for $1.
+(example: 2.412G)
+You also can leave it blank for automatic choice."
+	
+	if [ -n "$SSFT_RESULT" ]; then
+		echo "	wireless-freq $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-freq" >> "$pathb"interfaces-build
+	fi
+	
+	#wireless-key:
+	select_single "$title" "How do you want to handle the key for $1?" "1_No_key_(open_network) 2_Enter_key_in_the_interfaces_file 3_Enter_key_in_a_new_keyfile 4_Use_key_from_the_existing_keyfile_(/etc/network/wep.$1)"
+	
+	case "$SSFT_RESULT" in
+		"1"*)
+			# No key:
+			echo "#	wireless-key" >> "${pathb}interfaces-build"
+			;;
+		"2"*)
+			# Key in the interfaces:
+			inputbox "$title" "Please enter WEP key.
+If you enter nothing no encryption will be used."
+		
+			if [ -n "$SSFT_RESULT" ]; then
+				echo "	wireless-key $SSFT_RESULT" >> "$pathb"interfaces-build
+				#echo "	pre-up KEY=$SSFT_RESULT && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
+			else
+				echo "#	wireless-key" >> "$pathb"interfaces-build
+			fi
+			;;
+		"3"*)
+			# Key in a new wep.* file
+			inputbox "$title" "Please enter WEP key for the /etc/network/wep.$1 file:"
+			
+			if [ -n "$SSFT_RESULT" ]; then
+				echo "$SSFT_RESULT" >> /etc/network/wep.$1
+				
+				chmod 700 /etc/network/wep.$1
+				
+				echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "${pathb}interfaces-build"
+			fi
+			;;
+		"4"*)
+			# Use Key from existing wep.* file
+			echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "${pathb}interfaces-build"
+			;;
+		*)
+			# No input -> no key:
+			echo "#	wireless-key" >> "${pathb}interfaces-build"
+			;;
+	esac
+}
+
+# Function to install all wlan networks:
+function generate-wlan {
+	select_single "$title" "What type do you want to use for $1
+	(If wpa-roam doesn't work use ndiswrapper for this network device.)" "1_WPA-ROAM_(multi_network) 2_DHCP_(single_network) 3_STATIC_(single_network) 4_No_configuration"
+	
+	case "$SSFT_RESULT" in
+		"1"*)
+			# WPA-ROAM:
+			echo "allow-hotplug $1"				>> "${pathb}interfaces-build"
+			echo "iface $1 inet manual"			>> "${pathb}interfaces-build"
+		
+			# Select the wpa-driver
+			# XXX: Please rework this, all named wlan drivers prefer wext now with current (supported) kernels.
+			select_single "$title" "What wpa driver should be used?
+If you don't know what type you need try wext first.
+
+Important:
+Ndiswrapper after version 1.16 use WEXT
+Intel Pro (ipw2100, 2200, 2945) also use WEXT
+Madwifi should also use WEXT" "1_WEXT:_Linux_wireless_extensions_(generic) 2_HOSTAP:_Host_AP_driver_(Prism2/2.5/3) 3_MADWIFI:_Madwifi_802.11_support_(Atheros,_etc.) 4_ATMEL:_ATMEL_AT76C5XXx_(USB,_PCMCIA) 5_NDISWRAPPER:_Linux_ndiswrapper 6_IPW:_Intel_ipw2100/2200_driver 7_WIRED:_wired_Ethernet_driver"
+			case "$SSFT_RESULT" in
+				"7"*)
+					echo "	wpa-driver wired"	>> "${pathb}interfaces-build"
+				;;
+				*)
+					echo "#	wpa-driver wext"	>> "${pathb}interfaces-build"
+				;;
+			esac
+			
+			# Enter wpa-roam line:
+			echo "	wpa-roam /etc/wpa_supplicant.conf"	>> "${pathb}interfaces-build"
+			echo ""						>> "${pathb}interfaces-build"
+			echo "iface default inet dhcp"			>> "${pathb}interfaces-build"
+			
+			# say how a wpa-roam network can be configured:
+			msgbox "$title" "You can administrate wpa-roam to access to a wireless network through the second point of the main menue!"
+			;;
+		"2"*)
+			# DHCP
+			echo "allow-hotplug $1"				>> "${pathb}interfaces-build"
+			echo "iface $1 inet dhcp"			>> "${pathb}interfaces-build"
+			get-wep-entry $1
+			echo >> "${pathb}interfaces-build"
+		;;
+		"3"*)
+			# STATIC
+			echo "allow-hotplug $1"				>> "${pathb}interfaces-build"
+			echo "iface $1 inet static"			>> "${pathb}interfaces-build"
+			get-static-entry
+			get-wep-entry $1
+			echo >> "${pathb}interfaces-build"
+		;;
+		"4"*)
+			# no configuration:
+			:
+			;;
+		*)
+			# No input -> no configuration
+			:
+			;;
+	esac
+}
+
+# Function for editing one ore more lan cards:
+function install-lan-cards()
+{
+	# Get the current configuration:
+	if get_current_configuration; then
+		return 1
+	fi
+	
+	typeset -i number1
+	
+	# Check if a lan exist:
+	if [ -n "${lan[0]}" ]; then
+		# Install all lan cards:
+		# Get name of cards to configure:
+		# XXX: another function candidate
+		select_more "$title" "Please choose the lan cards you want to configure" "`
+			number1=0
+			
+			for var in ${lan[*]}; do
+				echo "${lan[$number1]}"
+				number1=$number1+1
+			done
+		`"
+		# Save the result:
+		lan2=(`echo "${SSFT_RESULT}"`)
+		if [[ -z ${lan2[0]} ]]; then
+			return 1
+		fi
+		
+		# Install all selected lan cards:
+		number1=0
+		for var in ${lan2[*]}; do
+			#echo "${lan2[$number1]}"
+			delete-if-exist ${lan2[$number1]}
+			generate-lan ${lan2[$number1]}
+			number1=$number1+1
+		done
+	fi
+	
+	unset lan2
+	unset number1
+	
+	# Ask if files should be saved:
+	if save-files-yes-no; then
+		if [ -n ${lan[0]} ]; then
+			restart-lan-networks
+		fi
+	fi
+}
+
+# Function to controll the installation of the base:
+function install-wlan-cards()
+{
+	# Get the current configuration:
+	if get_current_configuration; then 
+		return 1
+	fi
+	
+	typeset -i number2
+	
+	# Check if a wlan exist:
+	if [ -n "${wlan[0]}" ]; then
+		# Install all wlan cards:
+		# Get name of cards to configure:
+		select_more "$title" "Please choose the wlan cards you want to configure" "`
+			number2=0
+			
+			for var in ${wlan[*]}; do
+				echo "${wlan[$number2]}"
+				number2=$number2+1
+			done
+		`"
+		# Save the result:
+		wlan2=(`echo "${SSFT_RESULT}"`)
+		if [[ -z ${wlan2[0]} ]]; then
+			return 1
+		fi
+		
+		# Install all selected lan cards:
+		number2=0
+		
+		for var in ${wlan2[*]}; do
+			#echo "${wlan[$number2]}"
+			delete-if-exist ${wlan2[$number2]}
+			generate-wlan ${wlan2[$number2]}
+			number2=$number2+1
+		done
+	fi
+	
+	unset wlan2
+	unset number2
+	
+	# Ask if files should be saved:
+	if save-files-yes-no; then
+		if [ -n "${wlan[0]}" ]; then
+			restart-wlan-networks
+		fi
+	fi
+}
+
+# Function for editing_one_network:
+function install-one-card()
+{
+	# Get the current configuration:
+	if get_current_configuration; then 
+		return 1
+	fi
+	
+	typeset -i number
 	# First get network list for edit:
 	select_single "$title" "Which network do you want to configure?" "`
+		# XXX: function please
 		number=0
 		
 		for var in ${lan[*]}; do
@@ -1181,7 +1490,7 @@ function edit_one_network {
 		for var in ${wlan[*]}; do
 			echo "${wlan[$number]}"
 			number=$number+1
-	done
+		done
 	`"
 	# Get the type of the chosen network:
 	number=0
@@ -1189,184 +1498,522 @@ function edit_one_network {
 		if [ "${lan[$number]}" = "$SSFT_RESULT" ]; then
 			network_type="lan"
 		fi
-	
+		
 		number=$number+1
 	done
 	
 	number=0
+	
 	for var in ${wlan[*]}; do
 		if [ "${wlan[$number]}" = "$SSFT_RESULT" ]; then
 			network_type="wlan"
 		fi
-	
+		
 		number=$number+1
 	done
-	
-	# Get the current configuration:
-	get_current_configuration
-	
-	# Delete the lines from the interfaces (if there a config already exist):
-	line_number=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|cut -d ":" -f1`)
-	line_name=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|awk '{print $5}'`)
-	line_type=(`grep -n ''$SSFT_RESULT'' "$pathi"interfaces|awk '{print $2}'`)
-	
-	# Check if it network esist delete it if needet:
-	number=0
-	need_to_delete="no"
-	for var in ${line_number[*]}; do
-		if [ "${line_name[$number]}" = "$SSFT_RESULT" ]; then
-			from_line_number=`echo ${line_number[$number]}`
-			need_to_delete="yes"
-			break
-		fi
-	
-		number=$number+1
-	done
-	
-	# Now delete it if in the interfaces:
-	if [ "$need_to_delete" = "yes" ]; then
-		case ${line_type[$number]} in
-			"WPA-Wlan")
-				to_line_number=$from_line_number+4	
-				sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-				;;
-			"DHCP-Wlan")
-				to_line_number=$from_line_number+9	
-				sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-				;;
-			"STATIC-Wlan")
-				to_line_number=$from_line_number+14
-				sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-				;;
-			"DHCP-Lan")
-				to_line_number=$from_line_number+3	
-				sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-				;;
-			"STATIC-Lan")
-				to_line_number=$from_line_number+8
-				sed ''$from_line_number','$to_line_number' d' "$pathi"interfaces > "$pathb"interfaces-build
-				;;
-			*)
-				;;
-		esac
-	fi
 	
 	# Now configure the network:
 	case "$network_type" in
 	"lan")
+		delete-if-exist $SSFT_RESULT
 		generate-lan $SSFT_RESULT
 		# Save everything?
 		if save-files-yes-no; then
 			restart-lan-networks
-			#restart-wlan-networks
 		fi
-	;;
+		;;
 	"wlan")
+		delete-if-exist $SSFT_RESULT
 		generate-wlan $SSFT_RESULT
 		# Save everything?
 		if save-files-yes-no; then
-			#restart-lan-networks
 			restart-wlan-networks
 		fi
 		;;
 	*)
-		echo "$network_type"
-		
-		# Save everything?
-		if save-files-yes-no; then
-			restart-lan-networks
-			restart-wlan-networks
-		fi
+		#echo "$network_type"
+		## Save everything?
+		#if save-files-yes-no
+		#then
+		#	restart-lan-networks
+		#	restart-wlan-networks
+		#fi
+		:
 		;;
 	esac
 	
 	# Cleaning up the variables:
-	unset need_to_delete
-	unset from_line_number
-	unset to_line_number
-	unset line_number
-	unset line_name
-	unset line_type
 	unset network_type
 	unset number
 }
 
 ####################################################################################################################################
 ####################################################################################################################################
-# Start ############################################################################################################################
+## 4 functions for other points of the main menu: ##################################################################################
 ####################################################################################################################################
 ####################################################################################################################################
 
-echo "--------------------------------------------------------------------------------
-################################################################################
---------------------------------------------------------------------------------
-Welcome to the network tool with wpa-roam support!"
+# Function to restore the backup files:
+function restore-backup-files()
+{
+	if save-files-yes-no; then
+		# Restore interfaces:
+		if mv -f "${pathi}interfaces-org" "${pathi}interfaces"; then
+			file1_stat="was successful"
+		else
+			file1_stat="failed"
+		fi
+		
+		# Restore wpa_supplicant.conf:
+		if mv -f "${pathw}wpa_supplicant.conf-org" "${pathw}wpa_supplicant.conf"; then
+			file2_stat="was successful"
+		else
+			file2_stat="failed"
+		fi
+		
+		# Return if it worked:
+		msgbox "Text" "Restore of interfaces: $file1_stat
+and
+Restore of wpa_supplicant.conf: $file2_stat"
+	
+		#restart-networks
+		restart-lan-networks
+		restart-wlan-networks
+	fi
+	
+	# Cleaning up the variables:
+	unset file1_stat
+	unset file2_stat
+}
 
+# Function for displaying all configured network cards:
+function show_all_cards()
+{
+	typeset -i number
+	network_name=(`awk '/iface/ {print $2}' "${pathi}interfaces"`)
+	network_type=(`awk '/iface/ {print $4}' "${pathi}interfaces"`)
+	echo "" > "${pathb}auflistung"
+	
+	# Changing name from manual to wpa-roam:
+	number=0
+	
+	for var in ${network_type[*]}; do
+		if [[ "${network_type[$number]}" == "manual" ]]; then
+			network_type[$number]="wpa-roam"
+		fi
+		
+		number=$number+1
+	done
+	
+	# Collecting all network cards:
+	number=0
+	for var in ${network_name[*]}; do
+		# Ignore network lo:
+		if [[ "${network_name[$number]}" == "lo" ]]; then
+			number=$number+1
+			continue
+		fi
+		
+		# Ignore wpa-roam networks:
+		check=(`grep -n ''${network_name[$number]}'' "$pathw"wpa_supplicant.conf|cut -d ":" -f1`)
+		if [[ -n $check ]]; then
+			number=$number+1
+			continue
+		fi
+		
+		# Display only the real networkcards:
+		echo "Networkname: ${network_name[$number]} 	(Type: ${network_type[$number]})" >> "$pathb"auflistung
+		number=$number+1
+	done
+	
+	# Display all found networks:
+	msgbox "$title" "The following network cards are installed:
+`cat "$pathb"auflistung`"
+
+	# Cleaning up:
+	rm -f "$pathb"auflistung
+	
+	unset network_name
+	unset network_type
+	unset number
+	unset check
+}
+
+# Function for displaying all wlans from the wpa_supplicant.conf:
+function show_all_wlans()
+{
+	typeset -i number number_up number_down
+	echo "" > "${pathb}auflistung"
+	line_number=(`grep -n 'ssid="' "$pathw"wpa_supplicant.conf|cut -d ":" -f1`)
+	network_name=(`grep -n 'ssid="' "$pathw"wpa_supplicant.conf|awk -F\" '{print $2}'`)
+	
+	# Get Priority:
+	network_priority=()
+	number=0
+	
+	for var in ${line_number[*]}; do
+		number_up=`echo "${line_number[$number]}"`
+		
+		while true; do
+			check=(`sed -n ''$number_up' p' "$pathw"wpa_supplicant.conf|awk '{print $1}'`)
+			
+			if [[ "$check" == "network={" ]]; then
+				break
+			fi
+			
+			number_up=$number_up-1
+		done
+		
+		number_down=`echo "$number_up"`
+		
+		while true; do
+			check=(`sed -n ''$number_down' p' "$pathw"wpa_supplicant.conf|awk '{print $1}'`)
+			case $check in
+				"}")
+					network_priority[$number]="No priority found."
+					break
+					;;
+				"priority="*)
+					network_priority[$number]=`sed -n ''$number_down' p' "$pathw"wpa_supplicant.conf|awk -F= '{print $2}'`
+					break
+					;;
+				*)
+					#echo "no"
+					number_down=$number_down+1
+					;;
+			esac
+		done
+		
+		#echo "yes"
+		number=$number+1
+	done
+	
+	# Get Type:
+	network_type=()
+	number=0
+	
+	for var in ${line_number[*]}; do
+		number_up=`echo "${line_number[$number]}"`
+		
+		while true; do
+			check=(`sed -n ''$number_up' p' "$pathw"wpa_supplicant.conf|awk '{print $1}'`)
+			if [[ "$check" == "network={" ]]; then
+				break
+			fi
+			number_up=$number_up-1
+		done
+		
+		number_down=`echo "$number_up"`
+		
+		while true; do
+			check=(`sed -n ''$number_down' p' "$pathw"wpa_supplicant.conf|awk '{print $1}'`)
+			case $check in
+			"wep_key0="*)
+				network_type[$number]="WEP"
+				break
+				;;
+			*"=WPA-PSK")
+				network_type[$number]="`sed -n ''$number_down' p' "$pathw"wpa_supplicant.conf|awk -F= '{print $2}'`"
+				break
+				;;
+			"}")
+				network_type[$number]="Open network"
+				break
+				;;
+			*)
+				#echo "no"
+				number_down=$number_down+1
+				;;
+			esac
+		done
+		
+		#echo "yes"
+		number=$number+1
+	done
+	
+	# Set everything together:
+	number=0
+	
+	for var in ${network_name[*]}; do
+		# Ignore open network:
+		if [[ -z ${network_name[$number]} ]]; then
+			number=$number+1
+			continue
+		fi
+	
+		echo "Network $number:"							>> "${pathb}auflistung"
+		echo "	Name: ${network_name[$number]}"					>> "${pathb}auflistung"
+		echo "	Type: ${network_type[$number+1]}"				>> "${pathb}auflistung"
+		echo "	Priority: ${network_priority[$number+1]}"			>> "${pathb}auflistung"
+	
+		number=$number+1
+	done
+	
+	# Display all found networks:
+	msgbox "$title" "The following wpa-roam networks are installed:
+`cat "$pathb"auflistung`"
+	
+	#Cleaning up:
+	rm -f "$pathb"auflistung
+	
+	unset line_number
+	unset network_name
+	unset number
+	unset number_up
+	unset number_down
+	unset check
+}
+
+# Function to display the interface file:
+function show_interfaces()
+{
+	msgbox "$title" "This is your current interface file:
+--------------------------------------------------------------------------
+`cat "$pathi"interfaces`
+"
+}
+
+# Function to display the wpa_supplicant.conf:
+function show_wpa()
+{
+	msgbox "$title" "This is your current wpa_supplicant.conf file:
+--------------------------------------------------------------------------
+`cat "$pathw"wpa_supplicant.conf`
+"
+}
+
+# Function to install all needet network packages for wpa-roam
+function install_packages()
+{
+if yesno "$title" "Should i install all needet packages for wpa?"; then
+	apt-get update && apt-get -y install ifplugd libdaemon0 ifupdown ifupdown-scripts ifupdown-scripts-zg2 ifupdown-extra ifupdown-extra iputils-arping wpasupplicant wparoamd
+fi
+}
+
+####################################################################################################################################
+####################################################################################################################################
+# Start and dialog structure: ######################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+
+# Function for choose one option for installing networkcards:
+function configure_networkcards()
+{
+	while true; do
+		select_single "$title" "What do you want to do now?
+You can choose between:
+(If you use this script the first time please choose point 5!)" "1)_Configure_one_or_more_lan_cards
+2)_Configure_one_or_more_wlan_cards
+3)_Configure_only_one_card
+4)_Show_all_configured_network_cards
+5)_Return_to_main_menue"
+
+		case "$SSFT_RESULT" in
+			"1"*)
+				# Configure one or more lan cards:
+				install-lan-cards
+				;;
+			"2"*)
+				# Configure one or more lan cards:
+				install-wlan-cards
+				;;
+			"3"*)
+				# Configure only one card:
+				install-one-card
+				;;
+			"4"*)
+				# Show all configured cards
+				show_all_cards
+				;;
+			*)
+				# return to main menue
+				return 0
+				;;
+		esac
+	done
+}
+
+
+# Function for choose one option for installing networkcards:
+function configure_wpa-roam()
+{
+	while true; do
+		select_single "$title" "What do you want to do now?
+You can choose between:" "1)_Add_a_new_wpa-roam_wlan_network
+2)_Delete_one_wpa-roam_wlan_network
+3)_Show_all_installed_wpa-roam_wlan_networks
+4)_Return_to_main_menue"
+
+		case "$SSFT_RESULT" in
+			"1"*)
+				# Add a new wlan network (wpa-roam):
+				add-wireless-network
+				;;
+			"2"*)
+				# Show all installed wlans (wpa-roam):
+				remove_existing_wlan
+				;;
+			"3"*)
+				# Remove one of the installed wlans (wpa-roam):
+				show_all_wlans
+				;;
+			*)
+				# return to main menue
+				return 0
+				;;
+		esac
+	done
+}
+
+# Function for choose one option for installing networkcards:
+function configure_fallback()
+{
+	while true; do
+		select_single "$title" "What do you want to do now?
+You can choose between:" "1)_Restore_last_backup
+2)_Delete_full_configuration_(reset_files)
+3)_Install_all_needet_packages
+4)_Return_to_main_menue"
+
+		case "$SSFT_RESULT" in
+			"1"*)
+				# Restore the last backup:
+				restore-backup-files
+				;;
+			"2"*)
+				# Delete full configuration means (install clean files)
+				generate-base-interface
+				generate-base-wpa
+				save-files-yes-no
+				;;
+			"3"*)
+				install_packages
+				;;
+			*)
+				# return to main menue
+				return 0
+				;;
+		esac
+	done
+}
+
+# Function for choose one option for faq:
+function information_faq()
+{
+	while true; do
+		select_single "$title" "What do you want to do now?
+You can choose between:" "1)_What_is_wpa-roam
+2)_What_is_DHCP
+3)_What_is_Static
+4)_Display_current_interfaces_file
+5)_Display_current_wpa_supplicant.conf_file
+7)_Return_to_main_menue"
+
+		case "$SSFT_RESULT" in
+			"1"*)
+				# Information about wpa-roam:
+				msgbox "$title" "Wpa-Roam:
+
+This means, that the wpa_supplicant and wpa_cli daemon is controlling your wireless connection. You definde one or more network in the wpa_supplicant.conf file. When the network is starting the wpa_cli is scanning for wireless networks in range. If one of the defined network is found the connection will be established. For every network you can define if it is dhcp or static (By static also different IP Adress are possible).
+
+If your wireless card support wpa-roam it is really the best choice.
+
+You can find more information in the sidux manual:
+http://manual.sidux.com/en/internet-connecting-wpa-en.htm
+(Manual: Internet and Networking -> Wifi-wlan)"
+				;;
+			"2"*)
+				# Information about DHCP
+				msgbox "$title" "DHCP means, that you get your IP-Adress from a router or an other DHCP-Server.
+On bootup your PC automatic try to get a adress.
+
+You can find more information here:
+http://en.wikipedia.org/wiki/Dhcp"
+				;;
+			"3"*)
+				# Information about Static
+				msgbox "$title" "Static means, that you define your IP-Adress by hand.
+On bootup your PC will use the deffined adress.
+
+You can find more information here:
+
+IP:	http://en.wikipedia.org/wiki/IP_address
+Netmask:	http://en.wikipedia.org/wiki/Netmask
+Gateway and Router:	http://en.wikipedia.org/wiki/Routers"
+				;;
+			"4"*)
+				# Display the interfaces file:
+				show_interfaces
+				;;
+			"5"*)
+				# Display the wpa file:
+				show_wpa
+				;;
+			*)
+				# return to main menue
+				return 0
+				;;
+		esac
+	done
+}
+
+# Startpoint of the script:
 # Find all networks:
 get-networks
-
 while true; do
 	select_single "$title" "The following networks could be found:
-	--------------------------------------------------------------------------
-	LAN networks:
-	`typeset -i number
+--------------------------------------------------------------------------
+LAN networks:
+`typeset -i number
 	number=0
+	
 	for var in ${lan[*]}; do
 		echo "	${lan[$number]}"
 		number=$number+1
 	done
 	
 	echo "--------------------------------------------------------------------------
-	WLAN networks:"
+WLAN networks:"
 	
 	number=0
 	for var in ${wlan[*]}; do
 		echo "	${wlan[$number]}"
-			number=$number+1
+		
+		number=$number+1
 	done
+	
 	unset number
-	`
+`
 --------------------------------------------------------------------------
 What do you want to do now?
-You can choose between:" "1)_Basic_installation_of_all_networkcards. 2)_Show_all_configured_network_cards 3)_Edit_or_install_only_one_network 4)_Add_a_new_wpa-roam_wlan_network. 5)_Show_all_installed_wpa-roam_wlans 6)_Delete_one_wpa-roam_wlan_network 7)_Restore_the_last_backup. 8)_Start/Restart_all_networks 9)_Exit_this_script."
-	
+You can choose between:" "1)_Submenue:_Configure_one_or_more_networkcards
+2)_Submenue:_Configure_wireless_acess_points_(wpa-roam)
+3)_Submenue:_Restore_backup_or_delete_full_configuration
+4)_Submenue:_Help_and_information_(faq)
+5)_Start/Restart_all_networks
+6)_Exit_this_script"
+
 	case "$SSFT_RESULT" in
 		"1"*)
-			# Basic installation of all networkcards:
-			basic-install
+			# Configuration of all networkcards:
+			configure_networkcards
 			;;
 		"2"*)
-			# Show all configurated network cards:
-			show_all_cards
+			# Configuration of wpa-roam networks:
+			configure_wpa-roam
 			;;
 		"3"*)
-			#Edit only one network:
-			edit_one_network
+			# Restore the last backup or install clean files:
+			configure_fallback
 			;;
 		"4"*)
-			# Add a new wlan network:
-			add-wireless-network
+			# Show some information about this script:
+			information_faq
 			;;
 		"5"*)
-			# Show all installed wlans:
-			show_all_wlans
-			;;
-		"6"*)
-			# Remove one of the installed wlans:
-			remove_existing_wlan
-			;;
-		"7"*)
-			# Restore the last backup:
-			restore-backup-files
-			;;
-		"8"*)
 			# Restart all lan network devices:
 			restart-lan-networks
 			restart-wlan-networks
-			;;
-		"9"*)
-			# Exit this script:
-			exit-script
 			;;
 		*)
 			# Exit this script:
@@ -1377,6 +2024,6 @@ done
 
 ####################################################################################################################################
 ####################################################################################################################################
-# End #############################################################################################################################
+# End ##############################################################################################################################
 ####################################################################################################################################
 ####################################################################################################################################

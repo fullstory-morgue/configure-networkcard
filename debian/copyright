@@ -8,5 +8,7 @@ Upstream Author: netcardconfig:
 			- Niall Walsh <niallwalsh@users.berlios.de>
                  sidux-networkconfig:
 		 	- Raider700 <raider700@gmx.at>
+		nicinfo:
+			- Kel Modderman <kel@otaku42.de>
 
 Copyright: GPL, see /usr/share/common-licenses

@@ -1,3 +1,12 @@
+configure-networkcard (0.6.31) unstable; urgency=low
+
+  * wlcardconfig-kanotix, netcardconfig-kanotix were never part of sidux or
+    debian, don't conflict with it.
+  * import new sidux-networkconfig from raider700.
+  * import nicinfo from kelmo.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  1 Mar 2007 16:40:53 +0100
+
 configure-networkcard (0.6.30) unstable; urgency=low
 
   [ Kel Modderman ]
@@ -7,7 +16,7 @@ configure-networkcard (0.6.30) unstable; urgency=low
   * add http://www.sidux.at/download/sidux-networkconfig.sh.
   * initial round of coding style fixes.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun,  4 Feb 2007 20:24:22 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  1 Mar 2007 14:20:43 +0100
 
 configure-networkcard (0.6.29) unstable; urgency=low
 
