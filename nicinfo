@@ -1,0 +1,111 @@
+#!/usr/bin/gawk -f
+#
+# Copyright (C) 2007 Kel Modderman <kel@otaku42.de>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this package; if not, write to the Free Software 
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, 
+# MA 02110-1301, USA.
+#
+# On Debian GNU/Linux systems, the text of the GPL license can be
+# found in /usr/share/common-licenses/GPL.
+
+function usage()
+{
+	print("Usage: nicinfo [-V|--verbose] [-a|--all-devices] [-e|--wired-devices] [-w|--wifi-devices] [devices]")
+	exit(1)
+}
+
+function is_wireless(dev,    retval)
+{
+	retval = system("test -d /sys/class/net/" dev "/wireless")
+	return retval
+}
+
+BEGIN {
+	IGNORECASE=1
+	bans = "([ \t]+)?(adapter|corporation|communications|connection|controller|ethernet|integrated|network|semiconductor|systems|technologies|technology|group|inc\\.|ltd\\.|co\\.|\\(tm\\)|\\(rev .+\\)),?"
+
+	if (ARGC > 1) {
+		for (i = 1; i < ARGC; i++) {
+			if 	(ARGV[i] ~ /^(-V|--verbose)/) 		verbosity = 1
+			else if (ARGV[i] ~ /^(-a|--all-devices)/)	detect_all = 1
+			else if (ARGV[i] ~ /^(-e|--wired-devices)/)	detect_wired = 1
+			else if (ARGV[i] ~ /^(-w|--wifi-devices)/)	detect_wifi = 1
+			else if (ARGV[i] ~ /^-/)			usage()
+			else 						ifaces[++j] = ARGV[i]
+		}
+	}
+
+	if (! ifaces[1]) {
+		while (("echo /sys/class/net/*" | getline) > 0) {
+			gsub("/sys/class/net/", ""); split($0, sysfs_devs)
+			for (i in sysfs_devs) {
+				if (sysfs_devs[i] !~ /^(\*|lo|br|vmnet|sit)/) ifaces[++j] = sysfs_devs[i]
+			}
+		}
+	}
+
+	n = asort(ifaces)
+	for (i = 1; i <= n; i++) {
+
+		cmd = sprintf("udevinfo -a -p /sys/class/net/%s", ifaces[i])
+		while ((cmd | getline) > 0) {
+			if (/^[[:space:]]+[A-Z]+({.+})?==".+"/) {
+				sub(/^[[:space:]]+(ATTR(S)?)?/, ""); gsub(/{|}|"/, ""); split($0, udevinfo, "==")
+				if (! iface[ifaces[i], tolower(udevinfo[1])]) {
+					iface[ifaces[i], tolower(udevinfo[1])] = udevinfo[2]
+					if (verbosity) print("iface[" ifaces[i] ", " tolower(udevinfo[1]) "] = " udevinfo[2])
+				}
+			}
+		}
+
+		if (iface[ifaces[i], "type"] !~ /^(1|24)$/) continue
+
+		is_wireless(ifaces[i]) == 0 ? iface[ifaces[i], "CONN"] = "wireless" : \
+			iface[ifaces[i], "CONN"] = "ethernet"
+
+		if 	(detect_all)	{ print ifaces[i]; continue }			
+		else if (detect_wifi)	{ if (iface[ifaces[i], "CONN"] == "wireless") print ifaces[i]; continue }
+		else if (detect_wired)	{ if (iface[ifaces[i], "CONN"] == "ethernet") print ifaces[i]; continue }
+
+		if (iface[ifaces[i], "subsystems"] == "pci") {
+			cmd = sprintf("lspci -d %s:%s", iface[ifaces[i], "vendor"], iface[ifaces[i], "device"])
+			if ((cmd | getline) > 0) iface[ifaces[i], "DESC"] = gensub(/^.+:[ \t]+/, "", "a")
+		}
+		else if (iface[ifaces[i], "subsystems"] == "usb") {
+			if (iface[ifaces[i], "manufacturer"] ~ /^Linux/ || \
+				iface[ifaces[i], "product"] ~ iface[ifaces[i], "manufacturer"])
+				iface[ifaces[i], "DESC"] = iface[ifaces[i], "product"]
+			else iface[ifaces[i], "DESC"] = iface[ifaces[i], "manufacturer"] " " iface[ifaces[i], "product"]
+		}
+		else if (iface[ifaces[i], "subsystems"] == "pcmcia") {
+			if(iface[ifaces[i], "prod_id2"] ~ iface[ifaces[i], "prod_id1"])
+				iface[ifaces[i], "DESC"] = iface[ifaces[i], "prod_id2"]
+			else iface[ifaces[i], "DESC"] = iface[ifaces[i], "prod_id1"] " " iface[ifaces[i], "prod_id2"]
+		}
+		else if (iface[ifaces[i], "subsystems"] == "ieee1394") {
+			iface[ifaces[i], "drivers"] = "eth1394"
+			iface[ifaces[i], "DESC"] = "FireWire IEEE 1394"
+		}
+
+		if (iface[ifaces[i], "DESC"] ~ /^\w+/) {
+			gsub(bans, "", iface[ifaces[i], "DESC"])
+			iface[ifaces[i], "DESC"] = "(" iface[ifaces[i], "DESC"] ")"
+		}
+		else iface[ifaces[i], "DESC"] = "(no description)"
+		
+		print ifaces[i], iface[ifaces[i], "CONN"], iface[ifaces[i], "drivers"], \
+			iface[ifaces[i], "subsystems"], iface[ifaces[i], "address"], iface[ifaces[i], "DESC"]
+	}
+}
