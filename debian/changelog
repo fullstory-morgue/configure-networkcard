@@ -1,3 +1,9 @@
+configure-networkcard (0.6.32) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  1 Mar 2007 16:43:53 +0100
+
 configure-networkcard (0.6.31) unstable; urgency=low
 
   * wlcardconfig-kanotix, netcardconfig-kanotix were never part of sidux or
