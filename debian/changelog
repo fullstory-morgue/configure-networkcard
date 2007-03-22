@@ -1,8 +1,8 @@
-configure-networkcard (0.6.32) UNRELEASED; urgency=low
+configure-networkcard (0.6.32) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * nicinfo doesn't need root.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu,  1 Mar 2007 16:43:53 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 22 Mar 2007 23:21:50 +0100
 
 configure-networkcard (0.6.31) unstable; urgency=low
 
