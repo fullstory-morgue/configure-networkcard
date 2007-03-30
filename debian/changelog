@@ -1,8 +1,8 @@
-configure-networkcard (0.6.34) UNRELEASED; urgency=low
+configure-networkcard (0.6.34) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * fix *.desktop location.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 30 Mar 2007 23:17:14 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 31 Mar 2007 01:44:47 +0200
 
 configure-networkcard (0.6.33) unstable; urgency=low
 

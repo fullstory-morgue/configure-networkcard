@@ -1,5 +1,5 @@
 netcardconfig		usr/sbin/
 sidux-networkconfig	usr/sbin/
 nicinfo			usr/bin/
-*.desktop		usr/share/applications/
+*.desktop		usr/share/applications/sidux/
 icons			usr/share/
