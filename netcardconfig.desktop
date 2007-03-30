@@ -7,3 +7,4 @@ Name[de]=Netzwerkkarte konfigurieren
 Name[es]=Configuración de la tarjeta de red
 Name=Network card configuration
 Type=Application
+Categories=sidux;Net

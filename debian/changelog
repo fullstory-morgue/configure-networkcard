@@ -1,8 +1,8 @@
-configure-networkcard (0.6.33) UNRELEASED; urgency=low
+configure-networkcard (0.6.33) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * move to xdg, depend on sidux-xdg.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 22 Mar 2007 23:23:00 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 30 Mar 2007 23:14:01 +0200
 
 configure-networkcard (0.6.32) unstable; urgency=low
 
