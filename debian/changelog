@@ -1,12 +1,12 @@
-configure-networkcard (0.6.35) UNRELEASED; urgency=low
-
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
+configure-networkcard (0.6.35) unstable; urgency=low
 
   [ Joaquim Boura ]
   * set new icon
 
- -- Joaquim Boura <x-un-i@sidux.com>  Sat, 07 Apr 2007 15:03:46 +0200
+  [ Stefan Lippers-Hollmann ]
+  * fix debian/copyright.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 09 Apr 2007 01:22:44 +0200
 
 configure-networkcard (0.6.34) unstable; urgency=low
 

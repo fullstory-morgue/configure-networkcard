@@ -7,8 +7,10 @@ Upstream Author: netcardconfig:
 			- Klaus Knopper <knoppix@knopper.net>
 			- Niall Walsh <niallwalsh@users.berlios.de>
                  sidux-networkconfig:
-		 	- Raider700 <raider700@gmx.at>
-		nicinfo:
-			- Kel Modderman <kel@otaku42.de>
+		 	- (C) 2007 Raider700 <raider700@gmx.at>
+                 nicinfo:
+			- (C) 2006-2007 Kel Modderman <kel@otaku42.de>
+                 icons:
+		 	- (C) 2007 cathbard <cathbard@gmail.com>
 
 Copyright: GPL, see /usr/share/common-licenses
