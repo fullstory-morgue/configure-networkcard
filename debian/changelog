@@ -1,8 +1,12 @@
 configure-networkcard (0.6.36) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 09 Apr 2007 01:23:44 +0200
+  [ Joaquim Boura ]
+  * new icon sidux-netcard
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Sun, 29 Apr 2007 18:46:56 +0200
 
 configure-networkcard (0.6.35) unstable; urgency=low
 
