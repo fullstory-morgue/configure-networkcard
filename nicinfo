@@ -70,7 +70,7 @@ BEGIN {
 			}
 		}
 
-		if (iface[ifaces[i], "type"] !~ /^(1|24)$/) continue
+		if (iface[ifaces[i], "type"] !~ /^(1|24)$/ || ! iface[ifaces[i], "subsystems"]) continue
 
 		is_wireless(ifaces[i]) == 0 ? iface[ifaces[i], "CONN"] = "wireless" : \
 			iface[ifaces[i], "CONN"] = "ethernet"
