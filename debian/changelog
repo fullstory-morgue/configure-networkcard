@@ -1,4 +1,4 @@
-configure-networkcard (0.6.37) UNRELEASED; urgency=low
+configure-networkcard (0.6.37) unstable; urgency=low
 
   * nicinfo: skip devices whose bus type is not evident from sysfs.
 
