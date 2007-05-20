@@ -1,3 +1,9 @@
+configure-networkcard (0.6.38) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 20 May 2007 02:40:12 +0200
+
 configure-networkcard (0.6.37) unstable; urgency=low
 
   * nicinfo: skip devices whose bus type is not evident from sysfs.
