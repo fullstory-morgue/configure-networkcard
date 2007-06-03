@@ -1,8 +1,9 @@
-configure-networkcard (0.6.40) UNRELEASED; urgency=low
+configure-networkcard (0.6.40) unstable; urgency=low
 
   * NOT RELEASED YET
+  * recommend zenity (and xdialog, as long as we require netcardconfig).
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 04 Jun 2007 00:31:38 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 04 Jun 2007 00:35:46 +0200
 
 configure-networkcard (0.6.39) unstable; urgency=low
 
