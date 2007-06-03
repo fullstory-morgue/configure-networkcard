@@ -4,7 +4,8 @@
 # If you can find a bug please contact the author.
 # Author: Raider700 <raider700@gmx.at>
 # This script is under GPLv2
-# Last edit: 15.04.2007
+# Last edit: 03.06.2007
+# Version: 0.13
 # Proofreading of literals by Richard Holt, 12-Jan-2007.
 # Thx to x-un-i for helping me with writing this script!
 
@@ -36,11 +37,16 @@ filename="sidux-networkconfig"
 myLINE="--------------------------------------------------------------------------------"
 myHASH="################################################################################"
 #
+
 ####################################################################################################################################
 ####################################################################################################################################
 ## 0 Startup and ssft dialog questions: ############################################################################################
 ####################################################################################################################################
 ####################################################################################################################################
+
+version_date="$myLINE
+The number of this version of the script is: 0.13
+The last edit of this version was: 03.06.2007"
 
 # Needet for direct access (function check_start)
 if [ -n "$1" ]; then
@@ -916,7 +922,7 @@ function get-wlan-type()
 # Fuction to ask what type of wlan should be added:
 function new-wlan() 
 {
-	select_single "$title" "Please select the type for the wireless network:" "1_Open_(unencrypted)_network 2)_WEP_encrypted_network 3)_WPA-PSK_encrypted_network 4)_Enter_no_network."
+	select_single "$title" "Please select the type for the wireless network:" "1_Open_(unencrypted)_network 2)_WEP_encrypted_network 3)_WPA-PSK_encrypted_network 4)_WPA2_PSK_(not_tested) 5)_WPA2-AES-PSK_(not_tested) 6)_Enter_no_network."
 	case "$SSFT_RESULT" in
 	"1"*) 
 		# Open (unencrypted) network
@@ -1060,6 +1066,102 @@ If you leave it blank the priority is set to 100"
 		echo "	key_mgmt=WPA-PSK"		>> "${pathb}wpa_supplicant.conf-build"
 		echo "	pairwise=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
 		echo "	group=CCMP TKIP WEP104 WEP40"	>> "${pathb}wpa_supplicant.conf-build"
+		echo "	psk=\"$key0\""			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "}"				>> "${pathb}wpa_supplicant.conf-build"
+		echo ""					>> "${pathb}wpa_supplicant.conf-build"
+		
+		get-wlan-type $ssid
+		;;
+	"4"*)
+		# WPA2-PSK - encrypted network
+		while true; do
+			inputbox "$title" "Please enter the name of the network"
+			if [[ -z "$SSFT_RESULT" ]]; then
+				return 1
+			fi
+			
+			# Check if entered name is possible
+			if check-wlan-name $SSFT_RESULT ; then
+				ssid=`echo $SSFT_RESULT`
+				break
+			else
+				if [ "$overwrite" = "true" ]; then
+					if yesno "$title" "Another network with this name already exists. Should the old network be overwrite? (Otherwise you can try another name)" ; 	then
+						ssid=`echo $SSFT_RESULT`
+						delete-if-exist2 $ssid
+						break
+					fi
+				fi
+			fi
+		done
+		inputbox "$title" "Please enter the WPA2-Key:"
+		key0=`echo $SSFT_RESULT`
+		inputbox "$title" "Please enter the priority of the network (0 to 100)
+If you leave it blank the priority is set to 100"
+		priority=`echo $SSFT_RESULT`
+		if [[ -z "$priority" ]]; 	then
+		    priority="100"
+		fi
+		
+		# Write everything to the file:
+		# Warning: changing legth of this output must be also correctet in the deleting part!
+		echo "network={"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	ssid=\"$ssid\""			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	id_str=\"$ssid\""		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	scan_ssid=1"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	proto=WPA2"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	key_mgmt=WPA-PSK"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	pairwise=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	group=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	psk=\"$key0\""			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "}"				>> "${pathb}wpa_supplicant.conf-build"
+		echo ""					>> "${pathb}wpa_supplicant.conf-build"
+		
+		get-wlan-type $ssid
+		;;
+	"5"*)
+		# WPA2-AES-PSK - encrypted network
+		while true; do
+			inputbox "$title" "Please enter the name of the network"
+			if [[ -z "$SSFT_RESULT" ]]; then
+				return 1
+			fi
+			
+			# Check if entered name is possible
+			if check-wlan-name $SSFT_RESULT ; then
+				ssid=`echo $SSFT_RESULT`
+				break
+			else
+				if [ "$overwrite" = "true" ]; then
+					if yesno "$title" "Another network with this name already exists. Should the old network be overwrite? (Otherwise you can try another name)" ; 	then
+						ssid=`echo $SSFT_RESULT`
+						delete-if-exist2 $ssid
+						break
+					fi
+				fi
+			fi
+		done
+		inputbox "$title" "Please enter the WPA2-Key:"
+		key0=`echo $SSFT_RESULT`
+		inputbox "$title" "Please enter the priority of the network (0 to 100)
+If you leave it blank the priority is set to 100"
+		priority=`echo $SSFT_RESULT`
+		if [[ -z "$priority" ]]; 	then
+		    priority="100"
+		fi
+		
+		# Write everything to the file:
+		# Warning: changing legth of this output must be also correctet in the deleting part!
+		echo "network={"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	ssid=\"$ssid\""			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	id_str=\"$ssid\""		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	scan_ssid=1"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	proto=WPA RSN"			>> "${pathb}wpa_supplicant.conf-build"
+		echo "	key_mgmt=WPA-PSK  WPA-EAP"	>> "${pathb}wpa_supplicant.conf-build"
+		echo "	pairwise=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
+		echo "	group=CCMP TKIP"		>> "${pathb}wpa_supplicant.conf-build"
 		echo "	psk=\"$key0\""			>> "${pathb}wpa_supplicant.conf-build"
 		echo "	priority=$priority"		>> "${pathb}wpa_supplicant.conf-build"
 		echo "}"				>> "${pathb}wpa_supplicant.conf-build"
@@ -1316,7 +1418,7 @@ If you whant to use dezimal you have to enter \"s:\" in front of the string"
 function generate-wlan() 
 {
 	select_single "$title" "What type do you want to use for $1
-(If wpa-roam doesn't work use ndiswrapper for this network device.)" "1_WPA-ROAM_(multi_network) 2_DHCP_(single_network) 3_STATIC_(single_network) 4_No_configuration"
+(If wpa-roam doesn't work use ndiswrapper for this network device.)" "1_multi_network:_WPA-ROAM 2_single_network:_DHCP 3_single_network:_STATIC 4_No_configuration"
 
 	case "$SSFT_RESULT" in
 		"1"*) 
@@ -2060,6 +2162,7 @@ You can choose between:" "1)_What_is_wpa-roam
 3)_What_is_Static
 4)_Display_current_interfaces_file
 5)_Display_current_wpa_supplicant.conf_file
+6)_Display_the_version_number_of_this_script
 7)_Return_to_main_menu"
 
 		case "$SSFT_RESULT" in
@@ -2099,6 +2202,9 @@ show_interfaces
 ;;
 "5"*) # Display the wpa file:
 show_wpa
+;;
+"6"*) # Show the Version of the Script:
+msgbox "$title" "$version_date"
 ;;
 *) # return to main menue
 return 0
@@ -2243,6 +2349,7 @@ Extra options:
 -h			display this help
 -mh			some short informations (menu)
 -u			update this script
+-v			show the version (date)
 "
 			exit-script
 			;;
@@ -2260,6 +2367,10 @@ Extra options:
 # 			# If there is nothing to do
 # 			echo "For a list of all direct commands start with -h"
 # 			;;
+		"-v")
+			echo "$version_date"
+			exit-script
+			;;
 		*) 
 			# Bad input
 			echo "Sorry \"$give1\" is a wrong command. Aborting."
@@ -2304,7 +2415,7 @@ unset number
 $myLINE
 What do you want to do now?
 You can choose between:" "1)_Submenue:_Configure_one_or_more_networkcards
-2)_Submenue:_Configure_wireless_acess_points_(wpa-roam)
+2)_Submenue:_Configure_wireless_acess_points_for_wpa-roam
 3)_Submenue:_Restore_backup_or_delete_full_configuration
 4)_Submenue:_Help_and_information_(faq)
 5)_Start/Restart_all_networks
