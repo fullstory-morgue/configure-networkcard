@@ -6,7 +6,7 @@ configure-networkcard (0.6.38) UNRELEASED; urgency=low
   [ Raider700 ]
   * Bugfix of sidux-networkconfig and show version feature add "-v"
 
- -- Raider700 <raider700@PC-2000>  Sun, 03 Jun 2007 23:23:24 +0200
+ -- Gerald Prock <raider700@gmx.at>  Sun, 03 Jun 2007 23:23:24 +0200
 
 configure-networkcard (0.6.37) unstable; urgency=low
 
