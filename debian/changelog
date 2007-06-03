@@ -1,8 +1,9 @@
-configure-networkcard (0.6.39) UNRELEASED; urgency=low
+configure-networkcard (0.6.39) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * explicitly depend on ssft.
+  * fix prior patch to prevent auto-updating.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 03 Jun 2007 23:39:21 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 04 Jun 2007 00:30:12 +0200
 
 configure-networkcard (0.6.38) unstable; urgency=low
 

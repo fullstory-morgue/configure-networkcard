@@ -7,8 +7,8 @@
 @DPATCH@
 diff -urNad trunk~/sidux-networkconfig trunk/sidux-networkconfig
 --- trunk~/sidux-networkconfig	2007-06-03 23:16:34.000000000 +0200
-+++ trunk/sidux-networkconfig	2007-06-03 23:35:25.000000000 +0200
-@@ -71,29 +71,6 @@
++++ trunk/sidux-networkconfig	2007-06-04 00:29:46.000000000 +0200
+@@ -71,28 +71,8 @@
  echo $myLINE
  echo "Welcome to the network tool with wpa-roam support!"
  
@@ -34,11 +34,12 @@ diff -urNad trunk~/sidux-networkconfig trunk/sidux-networkconfig
 -	
 -	exit 1
 -fi
--
++# load ssft
++. /usr/bin/ssft.sh
+ 
  # Check witch type of dialog is possible:
  [ -n "$SSFT_FRONTEND" ] ||  SSFT_FRONTEND="$(ssft_choose_frontend)"
- echo $myLINE
-@@ -1996,32 +1973,6 @@
+@@ -1996,32 +1976,6 @@
  "
  }
  
@@ -71,7 +72,7 @@ diff -urNad trunk~/sidux-networkconfig trunk/sidux-networkconfig
  # Function to install all needet network packages for wpa-roam
  function install_packages() 
  {
-@@ -2360,11 +2311,6 @@
+@@ -2360,11 +2314,6 @@
  			information_faq
  			exit-script
  			;;
@@ -83,7 +84,7 @@ diff -urNad trunk~/sidux-networkconfig trunk/sidux-networkconfig
  # 		"nothing") 
  # 			# If there is nothing to do
  # 			echo "For a list of all direct commands start with -h"
-@@ -2421,8 +2367,7 @@
+@@ -2421,8 +2370,7 @@
  3)_Submenue:_Restore_backup_or_delete_full_configuration
  4)_Submenue:_Help_and_information_(faq)
  5)_Start/Restart_all_networks
@@ -93,7 +94,7 @@ diff -urNad trunk~/sidux-networkconfig trunk/sidux-networkconfig
  
  	case "$SSFT_RESULT" in
  		"1"*) 
-@@ -2446,10 +2391,6 @@
+@@ -2446,10 +2394,6 @@
  			restart-lan-networks
  			restart-wlan-networks
  			;;
