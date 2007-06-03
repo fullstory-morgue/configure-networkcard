@@ -1,12 +1,13 @@
-configure-networkcard (0.6.38) UNRELEASED; urgency=low
+configure-networkcard (0.6.38) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Raider700 ]
+  [ Gerald Prock ]
   * Bugfix of sidux-networkconfig and show version feature add "-v"
 
- -- Gerald Prock <raider700@gmx.at>  Sun, 03 Jun 2007 23:23:24 +0200
+  [ Stefan Lippers-Hollmann ]
+  * disable auto-updating, sidux-networkconfig is packaged and /usr/sbin/
+    taboo for unpackaged files.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 03 Jun 2007 23:36:13 +0200
 
 configure-networkcard (0.6.37) unstable; urgency=low
 
