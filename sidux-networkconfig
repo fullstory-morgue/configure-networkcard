@@ -5,7 +5,7 @@
 # Author: Raider700 <raider700@gmx.at>
 # This script is under GPLv2
 # Last edit: 03.06.2007
-# Version: 0.13
+# Version: 0.14
 # Proofreading of literals by Richard Holt, 12-Jan-2007.
 # Thx to x-un-i for helping me with writing this script!
 
@@ -45,7 +45,7 @@ myHASH="########################################################################
 ####################################################################################################################################
 
 version_date="$myLINE
-The number of this version of the script is: 0.13
+The number of this version of the script is: 0.14
 The last edit of this version was: 03.06.2007"
 
 # Needet for direct access (function check_start)
@@ -1418,7 +1418,9 @@ If you whant to use dezimal you have to enter \"s:\" in front of the string"
 function generate-wlan() 
 {
 	select_single "$title" "What type do you want to use for $1
-(If wpa-roam doesn't work use ndiswrapper for this network device.)" "1_multi_network:_WPA-ROAM 2_single_network:_DHCP 3_single_network:_STATIC 4_No_configuration"
+
+If you have more networks or one WPA network take the first point (wpa-roam). The other points are more a fallback option if your card dosn't support WPA with wpa_supplicant.
+(If wpa-roam doesn't work try to use ndiswrapper for this network device.)" "1_multi_network:_WPA-ROAM 2_single_network:_DHCP 3_single_network:_STATIC 4_No_configuration"
 
 	case "$SSFT_RESULT" in
 		"1"*) 
