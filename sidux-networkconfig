@@ -4,8 +4,8 @@
 # If you can find a bug please contact the author.
 # Author: Raider700 <raider700@gmx.at>
 # This script is under GPLv2
-# Last edit: 03.06.2007
-# Version: 0.14
+# Last edit: 04.06.2007
+# Version: 0.15
 # Proofreading of literals by Richard Holt, 12-Jan-2007.
 # Thx to x-un-i for helping me with writing this script!
 
@@ -45,8 +45,8 @@ myHASH="########################################################################
 ####################################################################################################################################
 
 version_date="$myLINE
-The number of this version of the script is: 0.14
-The last edit of this version was: 03.06.2007"
+The number of this version of the script is: 0.15
+The last edit of this version was: 04.06.2007"
 
 # Needet for direct access (function check_start)
 if [ -n "$1" ]; then
@@ -1291,7 +1291,214 @@ function generate-lan()
 		esac
 }
 
-# Function for adding wep and open networks to the interfaces
+#Function to select the single network type:
+function get-wireless-entry()
+{
+	# ask for the type:
+	select_single "$title" "What single network type do you want for $1?
+(No Answer will take DHCP.)" "1)_DHCP 2)_Static 3)_Manual"
+		case "$SSFT_RESULT" in
+			"1"*) # DHCP
+				nwtype="dhcp"
+				;;
+			"2"*) # STATIC
+				nwtype="static"
+				;;
+			"3"*) # MANUAL
+				nwtype="manual"
+				;;
+			"4"*) # No answer ... set dhcp
+				nwtype="dhcp"
+				;;
+		esac
+
+	# make the entry
+	echo "allow-hotplug $1"  >> "$pathb"interfaces-build
+	echo "iface $1 inet $nwtype" >> "$pathb"interfaces-build
+	if [[ "$nwtype" == "static" ]]; then
+		get-static-entry
+	fi	
+
+	# ask for the encryption type
+	select_single "$title" "What thype of network security do you have?
+(Select nothing will take open network.)" "1)_WPA 2)_WEP 3)_Open_Network"
+		case "$SSFT_RESULT" in
+			"1"*) # WPA
+				get-wpa-entry $1
+				;;
+			"2"*) # WEP
+				get-wep-entry $1
+				;;
+			"3"*) # OPEN
+				get-open-entry $1
+				;;
+			"4"*) # No answer ... set OPEN
+				get-open-entry $1
+				;;
+		esac
+
+unset nwtype
+}
+
+#Function for adding open network to the interfaces
+function get-open-entry()
+{
+	#wireless-essid:
+	while true;do
+		inputbox "$title" "Please enter ESSID for $1.
+(example: homelan)
+You must enter a name here!"
+
+		if [ -n "$SSFT_RESULT" ]; then
+		    echo "	wireless-essid $SSFT_RESULT" >> "$pathb"interfaces-build
+		    break
+		fi
+	done
+
+	#wireless-mode:
+	select_single "$title" "Please select the mode for $1:" "1_Managed_(default) 2_Ad-Hoc 3_Master 4_Repeater 5_Secondary 6_Auto"
+		case "$SSFT_RESULT" in
+			"1"*)	
+				# Managed:
+				echo "	wireless-mode managed" >> "$pathb"interfaces-build
+				;;
+			"2"*)	
+				# Ad-Hoc:
+				echo "	wireless-mode ad-hoc" >> "$pathb"interfaces-build
+				;;
+			"3"*)	
+				# Master
+				echo "	wireless-mode master" >> "$pathb"interfaces-build
+				;;
+			"4"*)	
+				# Repeater
+				echo "	wireless-mode repeater" >> "$pathb"interfaces-build
+				;;
+			"5"*)	
+				# Secondary
+				echo "	wireless-mode secondary" >> "$pathb"interfaces-build
+				;;
+				"6"*)	
+				# Auto
+				echo "	wireless-mode auto" >> "$pathb"interfaces-build
+				;;
+			*)  
+				# No input -> managed
+				echo "	wireless-mode managed" >> "$pathb"interfaces-build
+				;;
+		esac
+
+ 	#wireless-channel:
+	inputbox "$title" "Please enter channel number for $1.
+(example: 7)
+You also can leave it blank for automatic choice."
+
+	if [ -n "$SSFT_RESULT" ]; then
+		echo "	wireless-channel $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-channel" >> "$pathb"interfaces-build
+	fi
+
+	#wireless-nwid:
+	inputbox "$title" "Please enter the NWID (Cell Identifier) for $1.
+You also can leave it blank for automatic choice."
+
+	if [ -n "$SSFT_RESULT" ]; then
+		echo "	wireless-nwid $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-nwid" >> "$pathb"interfaces-build
+	fi
+
+	#wireless-freq:
+	inputbox "$title" "Please enter the frequence for $1.
+(example: 2.412G)
+You also can leave it blank for automatic choice."
+
+	if [ -n "$SSFT_RESULT" ]; then
+		echo "	wireless-freq $SSFT_RESULT" >> "$pathb"interfaces-build
+	else
+		echo "#	wireless-freq" >> "$pathb"interfaces-build
+	fi
+}
+
+#Function for adding wpa network to the interfaces
+function get-wpa-entry()
+{
+	#wpa-ssid:
+	while true;do
+		inputbox "$title" "Please enter WPA-SSID for $1.
+(example: homelan)
+You must enter a name here!"
+
+		if [ -n "$SSFT_RESULT" ]; then
+			wpa_s=`echo "$SSFT_RESULT"`
+			break
+		fi
+	done
+
+	#wpa-driver:
+	select_single "$title" "What wpa driver should be used?
+If you don't know what type you need try wext first.
+
+Important:
+Ndiswrapper after version 1.16 use WEXT
+Intel Pro (ipw2100, 2200, 2945) also use WEXT
+Madwifi should also use WEXT" "1_WEXT:_Linux_wireless_extensions_(generic) 2_HOSTAP:_Host_AP_driver_(Prism2/2.5/3) 3_MADWIFI:_Madwifi_802.11_support_(Atheros,_etc.) 4_ATMEL:_ATMEL_AT76C5XXx_(USB,_PCMCIA) 5_NDISWRAPPER:_Linux_ndiswrapper 6_IPW:_Intel_ipw2100/2200_driver 7_WIRED:_wired_Ethernet_driver"
+
+			case "$SSFT_RESULT" in
+				"1"*)
+					wpa_d="wext"
+					;;
+				"2"*)
+					wpa_d="hostap"
+					;;
+				"3"*)
+					wpa_d="madwifi"
+					;;
+				"4"*)
+					wpa_d="atmel"
+					;;
+				"5"*)
+					wpa_d="ndiswrapper"
+					;;
+				"6"*)
+					wpa_d="ipw"
+					;;
+				"7"*)
+					wpa_d="wired"
+					;;
+				*)
+					wpa_d="wext"
+					;;
+			esac
+
+	# wpa-key:
+	while true;do
+		inputbox "$title" "Please enter WPA key:
+You must enter a string here!"
+		if [ -n "$SSFT_RESULT" ]; then
+			wpa_k=`echo "$SSFT_RESULT"`
+			break	
+		fi
+	done
+
+	echo "	wpa-ssid $wpa_s" >> "$pathb"interfaces-build
+	echo "	wpa-driver $wpa_d" >> "$pathb"interfaces-build
+	echo "	wpa-psk $wpa_k" >> "$pathb"interfaces-build
+	echo "	wpa-key-mgmt WPA-PSK" >> "$pathb"interfaces-build
+	echo "	wpa-pairwise TKIP CCMP" >> "$pathb"interfaces-build
+	echo "	wpa-group TKIP CCMP" >> "$pathb"interfaces-build
+	echo "	wpa-proto WPA RSN" >> "$pathb"interfaces-build
+	echo "#	wpa-bssid #(Accespoint SSID as hex string)" >> "$pathb"interfaces-build
+
+	#add other stuff for enemercy:
+	#echo "#	wireless-mode managed" >> "$pathb"interfaces-build
+	#echo "#	wireless-channel" >> "$pathb"interfaces-build
+	#echo "#	wireless-nwid" >> "$pathb"interfaces-build
+	#echo "#	wireless-freq" >> "$pathb"interfaces-build
+}
+
+# Function for adding wep networks to the interfaces
 function get-wep-entry() 
 {
 	#wireless-essid:
@@ -1372,14 +1579,11 @@ You also can leave it blank for automatic choice."
 	fi
 
 	#wireless-key:
-	select_single "$title" "How do you want to handle the key for $1?" "1_No_key_(open_network) 2_Enter_key_in_the_interfaces_file 3_Enter_key_in_a_new_keyfile 4_Use_key_from_the_existing_keyfile_(/etc/network/wep.$1)"
+	select_single "$title" "How do you want to handle the key for $1?" "1_Enter_key_in_the_interfaces_file 2_Enter_key_in_a_new_keyfile 3_Use_key_from_the_existing_keyfile_(/etc/network/wep.$1)
+(No answer will take open network.)"
 
 	case "$SSFT_RESULT" in
 		"1"*) 
-			# No key:
-			echo "#	wireless-key" >> "$pathb"interfaces-build
-			;;
-		"2"*) 
 			# Key in the interfaces:
 			inputbox "$title" "Please enter WEP key.
 If you enter nothing no encryption will be used.
@@ -1394,7 +1598,7 @@ If you whant to use dezimal you have to enter \"s:\" in front of the string"
 				echo "#	wireless-key" >> "$pathb"interfaces-build
 			fi
 			;;
-		"3"*) 
+		"2"*) 
 			# Key in a new wep.* file
 			inputbox "$title" "Please enter WEP key for the /etc/network/wep.$1 file:"
 			if [ -n "$SSFT_RESULT"  ] ; then
@@ -1403,7 +1607,7 @@ If you whant to use dezimal you have to enter \"s:\" in front of the string"
 				echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
 			fi
 			;;
-		"4"*) 
+		"3"*) 
 			# Use Key from existing wep.* file
 			echo "	pre-up KEY=\$(cat /etc/network/wep.$1) && iwconfig $1 key \$KEY" >> "$pathb"interfaces-build
 			;;
@@ -1419,8 +1623,8 @@ function generate-wlan()
 {
 	select_single "$title" "What type do you want to use for $1
 
-If you have more networks or one WPA network take the first point (wpa-roam). The other points are more a fallback option if your card dosn't support WPA with wpa_supplicant.
-(If wpa-roam doesn't work try to use ndiswrapper for this network device.)" "1_multi_network:_WPA-ROAM 2_single_network:_DHCP 3_single_network:_STATIC 4_No_configuration"
+If you want to connect to more than one network please select \"multi network\" (wpa-roam).
+(If wpa-roam doesn't work try to use ndiswrapper for this network device.)" "1)_Multi_network_(wpa-roam) 2)_Single_network_(DHCP_or_Static) 3)_No_configuration"
 
 	case "$SSFT_RESULT" in
 		"1"*) 
@@ -1471,24 +1675,9 @@ Madwifi should also use WEXT" "1_WEXT:_Linux_wireless_extensions_(generic) 2_HOS
 			msgbox "$title" "You can administrate wpa-roam to access to a wireless network through the second point of the main menue or with -mv"
 			;;
 		"2"*) 
-			# DHCP
-			echo "allow-hotplug $1"  >> "$pathb"interfaces-build
-			echo "iface $1 inet dhcp" >> "$pathb"interfaces-build
-	
-			get-wep-entry $1
-			echo >> "$pathb"interfaces-build
-			;;
-		"3"*) 
-			# STATIC
-			echo "allow-hotplug $1" >> "$pathb"interfaces-build
-			echo "iface $1 inet static" >> "$pathb"interfaces-build
-			
-			get-static-entry
-			get-wep-entry $1
-			echo >> "$pathb"interfaces-build
-			;;
-		"4"*) 
-			# no configuration:
+			# SContinue with selection of singe type:
+			get-wireless-entry $1
+			echo "" >> "$pathb"interfaces-build
 			;;
 		*) 
 			# No input -> no configuration
