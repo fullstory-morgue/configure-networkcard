@@ -1,8 +1,9 @@
 configure-networkcard (0.6.41) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * Convert png icons to xpm and install pixmaps. Build-Depend on imagemagick.
+  * Install debian menu file.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 04 Jun 2007 21:21:08 +0200
+ -- Kel Modderman <kel@otaku42.de>  Fri, 15 Jun 2007 00:17:56 +1000
 
 configure-networkcard (0.6.40) unstable; urgency=low
 

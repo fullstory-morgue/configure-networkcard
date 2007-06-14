@@ -3,3 +3,9 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/dpatch.mk
 
+install/configure-networkcard::
+	mkdir -p debian/configure-networkcard/usr/share/pixmaps
+	convert icons/hicolor/32x32/apps/sidux-netcard.png \
+		debian/configure-networkcard/usr/share/pixmaps/configure-networkcard.xpm
+	convert icons/hicolor/16x16/apps/sidux-netcard.png \
+		debian/configure-networkcard/usr/share/pixmaps/configure-networkcard-16.xpm

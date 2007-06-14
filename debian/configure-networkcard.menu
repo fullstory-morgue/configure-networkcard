@@ -1,0 +1,7 @@
+?package(configure-networkcard):needs="text" \
+	section="Apps/System" \
+	hints="sidux,Config" \
+	title="Configure Network" \
+	icon32x32="/usr/share/pixmaps/configure-networkcard.xpm" \
+	icon16x16="/usr/share/pixmaps/configure-networkcard-16.xpm" \
+	command="/usr/sbin/netcardconfig"
