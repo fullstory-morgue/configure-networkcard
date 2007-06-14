@@ -1,4 +1,4 @@
-configure-networkcard (0.6.41) UNRELEASED; urgency=low
+configure-networkcard (0.6.41) unstable; urgency=low
 
   * Convert png icons to xpm and install pixmaps. Build-Depend on imagemagick.
   * Install debian menu file.
