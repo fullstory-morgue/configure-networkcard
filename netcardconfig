@@ -681,6 +681,9 @@ if [ "$count" -gt 1 ]; then
 		props2string
 		DEVICELIST="$DEVICELIST $mycount $MY_DEVICE_NAME"
 		((mycount++))
+		TMP=`echo $MY_DEVICE_NAME | cut -f1 -d_`;
+		if [ "$1" = "$TMP" ]; then
+			selectedCard=$mycount; fi
 	done
 fi
 
@@ -691,17 +694,21 @@ EXITMENU="$EXITKEY Exit"
 # main program loop until they bailout
 while (true); do
 	# first get the device
-	if [ "$count" -gt 1 ]; then
-		rm -f "$TMP"
-		$DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST $EXITMENU 2>"$TMP" || bailout
-		read DV <"$TMP" ; rm -f "$TMP"
-		[ "$DV" = "$EXITKEY" ] && bailout
+	if [ -n "$selectedCard" ]; then
+		DV=$selectedCard-1
 	else
-		# Only one device
-		DV=0
-		# they have asked to stop configuring the interface so exit
-		[ -z "$IFACEDONE" ] || bailout
-	fi
+		if [ "$count" -gt 1 ]; then
+			rm -f "$TMP"
+			$DIALOG --menu "$MESSAGE1" 18 60 12 $DEVICELIST $EXITMENU 2>"$TMP" || bailout
+			read DV <"$TMP" ; rm -f "$TMP"
+			[ "$DV" = "$EXITKEY" ] && bailout
+	 	else
+			#Only one device
+			DV=0
+			# they have asked to stop configuring the interface so exit
+			[ -z "$IFACEDONE" ] || bailout
+ 		fi
+	fi 
 
 	# device config loop
 	IFACEDONE=""
@@ -716,4 +723,7 @@ while (true); do
 			IFACEDONE="DONE"
 		fi
 	done
+	if [ "$selectedCard" != "" ]; then
+		bailout 
+	fi
 done
