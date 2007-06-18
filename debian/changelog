@@ -1,4 +1,4 @@
-configure-networkcard (0.6.43) UNRELEASED; urgency=low
+configure-networkcard (0.6.43) unstable; urgency=low
 
   * Add the possibility to give a card as input argument.
 
