@@ -1,14 +1,8 @@
-configure-networkcard (0.6.43) unstable; urgency=low
+configure-networkcard (0.6.42) unstable; urgency=low
 
   * Add the possibility to give a card as input argument.
 
  -- Fabian Wuertz <xadras@sidux.com>  Sun, 17 Jun 2007 16:16:22 +0200
-
-configure-networkcard (0.6.42) UNRELEASED; urgency=low
-
-  * NOT RELEASED YET
-
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 14 Jun 2007 17:02:03 +0200
 
 configure-networkcard (0.6.41) unstable; urgency=low
 
