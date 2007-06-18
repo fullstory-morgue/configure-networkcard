@@ -1,3 +1,9 @@
+configure-networkcard (0.6.43) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 18 Jun 2007 10:07:53 +0200
+
 configure-networkcard (0.6.42) unstable; urgency=low
 
   * Add the possibility to give a card as input argument.
