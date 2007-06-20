@@ -170,7 +170,7 @@ function lspci_lookup() {
 #
 # scan pci bus
 say "Scanning PCI bus for common hardware..."
-for dev in /sys/bus/pci/devices/*/*; do
+for dev in /sys/bus/pci*/devices/*/*; do
 	[[ -f ${dev}/vendor ]] && vendor=$(<${dev}/vendor) || continue
 	[[ -f ${dev}/device ]] && device=$(<${dev}/device) || continue
 	
