@@ -7,8 +7,9 @@ configure-networkcard (0.6.43) UNRELEASED; urgency=low
   * Add fw-detect, script to identify hardware/drivers with firmware
     requirements.
   * fw-detect: scan pci_express bus for madwifi too.
+  * fw-detect: fix prism54 fw detection.
 
- -- Kel Modderman <kel@otaku42.de>  Wed, 20 Jun 2007 22:55:37 +1000
+ -- Kel Modderman <kel@otaku42.de>  Wed, 20 Jun 2007 22:57:17 +1000
 
 configure-networkcard (0.6.42) unstable; urgency=low
 

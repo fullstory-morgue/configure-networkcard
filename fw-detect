@@ -75,7 +75,7 @@ for d in /sys/bus/*/drivers/*; do
 			;;
 		prism54)
 			say "Driver:  ${driver}"
-			if firmware_ok [12]\.[0-9]\.[0-9]\.[0-9]\.arm && firmware_ok isl; then
+			if firmware_ok [12]\.[0-9]\.[0-9]\.[0-9]\.arm || firmware_ok isl; then
 				continue
 			fi
 			fw="http://prism54.org/firmware/"
