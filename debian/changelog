@@ -1,9 +1,5 @@
-configure-networkcard (0.6.43) UNRELEASED; urgency=low
+configure-networkcard (0.6.43) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Kel Modderman ]
   * Add fw-detect, script to identify hardware/drivers with firmware
     requirements.
   * fw-detect: scan pci_express bus for madwifi too.
