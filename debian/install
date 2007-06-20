@@ -1,5 +1,6 @@
 netcardconfig		usr/sbin/
 sidux-networkconfig	usr/sbin/
 nicinfo			usr/bin/
+fw-detect		usr/bin/
 *.desktop		usr/share/applications/sidux/
 icons			usr/share/

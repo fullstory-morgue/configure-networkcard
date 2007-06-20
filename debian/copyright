@@ -8,7 +8,7 @@ Upstream Author: netcardconfig:
 			- Niall Walsh <niallwalsh@users.berlios.de>
                  sidux-networkconfig:
 		 	- (C) 2007 Raider700 <raider700@gmx.at>
-                 nicinfo:
+                 nicinfo, fwdetect:
 			- (C) 2006-2007 Kel Modderman <kel@otaku42.de>
                  icons:
 		 	- (C) 2007 cathbard <cathbard@gmail.com>

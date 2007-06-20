@@ -1,0 +1,197 @@
+#!/bin/bash
+#
+# Copyright 2007 Kel Modderman <kel@otaku42.de>
+# License: GPLv2
+#
+# Script to check if firmware or other non-free drivers are required.
+#
+
+while getopts vx opt; do
+	case "${opt}" in
+		v)
+			((verbosity++))
+			;;
+		x)
+			set -x
+			;;
+	esac
+done
+
+function say() {
+	[[ ${verbosity} ]] && echo ${@}
+}
+
+function firmware_ok() {
+	local fw="${1}" fw_dir="${2}"
+
+	for f in ${fw_dir:=/lib/firmware}/${fw}*; do
+		if [[ -e ${f} ]]; then
+			say "Firmware:"
+			say ${fw_dir:=/lib/firmware}/${fw}*
+			return 0
+		fi
+	done
+
+	say "Requires firmware"
+
+	return 1
+}
+
+#
+# check modules have required firmware
+#
+say "Looking for common drivers that need firmware..." 
+for d in /sys/bus/*/drivers/*; do
+	[[ -d ${d} ]] && driver=${d##*/} || driver=
+	
+	fw= fw_url=
+
+	case "${driver}" in
+		acx*)
+			say "Driver:  ${driver}"
+			firmware_ok tiacx && continue
+			fw="http://acx100.sourceforge.net/wiki/Firmware"
+			fw_url="http://www.kazer.org/acx-firmware-20060207.tar.bz2"
+			;;
+		atmel*|at76_usb)
+			say "Driver:  ${driver}"
+			firmware_ok atmel_at76c5 && continue
+			fw="apt-get install atmel-firmware"
+			;;
+		bcm43xx*)
+			say "Driver:  ${driver}"
+			firmware_ok bcm43xx && continue
+			fw="apt-get install bc43xx-fwcutter"
+			;;
+		ipw2100|ipw2200)
+			say "Driver:  ${driver}"
+			firmware_ok "${driver}" && continue
+			fw="apt-get install ${driver}-firmware"
+			;;
+		iwl3945|iwl4965)
+			say "Driver:  ${driver}"
+			firmware_ok "iwlwifi-${driver#iwl}" && continue
+			fw="apt-get install iwlwifi-${driver#iwl}-ucode"
+			;;
+		prism54)
+			say "Driver:  ${driver}"
+			if firmware_ok [12]\.[0-9]\.[0-9]\.[0-9]\.arm && firmware_ok isl; then
+				continue
+			fi
+			fw="http://prism54.org/firmware/"
+			;;
+		rt61*)
+			say "Driver:  ${driver}"
+			firmware_ok rt2561 && continue
+			fw="apt-get install rt61-fwcutter"
+			;;
+		rt73*)
+			say "Driver:  ${driver}"
+			firmware_ok rt73 && continue
+			fw="http://www.ralinktech.com/ralink/Home/Support/Linux.html"
+			fw_url="http://www.ralinktech.com.tw/data/RT71W_Firmware_V1.8.zip"
+			;;
+		zd1201)
+			say "Driver:  ${driver}"
+			firmware_ok "${driver}" && continue
+			fw="http://linux-lc100020.sourceforge.net/"
+			fw_url="http://prdownloads.sourceforge.net/linux-lc100020/zd1201-0.14-fw.tar.gz?download"
+			;;
+		zd1211*)
+			say "Driver:  ${driver}"
+			firmware_ok zd1211 /lib/firmware/zd1211 && continue
+			fw="apt-get install zd1211-firmware"
+			;;
+		*)
+			if [[ ${verbosity} -ge 2 ]]; then
+				echo "Ignoring ${driver}..."
+			fi
+			;;
+	esac
+
+	case "${fw}" in
+		apt-get*)
+			echo "#"
+			echo "# Detected driver that requires firmware to operate."
+			echo "# Follow these instructions to obtain the correct firmware"
+			echo "# and activate the ${driver} driver:"
+			echo "#"
+			echo "apt-get update"
+			echo "${fw}"
+			echo "modprobe -r ${driver}"
+			echo "modprobe ${driver}"
+			echo ""
+			;;
+		http*)
+			echo "#"
+			echo "# Detected driver that requires firmware to operate."
+			echo "# There is no readily available firmware package for ${driver}"
+			echo "# Visit the following page for information on how to obtain and"
+			echo "# install the required firmware:"
+			echo "#   ${fw}"
+			if [[ ${fw_url} ]]; then
+				echo "#"
+				echo "# You can obtain the firmware for ${driver} directly from:"
+				echo "#   ${fw_url}"
+				echo "#"
+				echo "# Download the archive and uncompress it. Copy the contents to:"
+				echo "#   /lib/firmware/"
+			fi
+			echo "#"
+			echo "# Once the firmware files have been installed, the ${driver} must be"
+			echo "# reloaded to activate the hardware. Use the following commands:"
+			echo "#"
+			echo "modprobe -r ${driver}"
+			echo "modprobe ${driver}"
+			echo ""
+			;;
+	esac
+done
+
+function kmodule_ok() {
+	local kmod="$(modinfo -n ${1} 2>/dev/null)"
+
+	if [[ -f ${kmod} ]]; then
+		say "Kernel module: ${kmod}"
+		return 0
+	fi
+
+	return 1
+}
+
+function lspci_lookup() {
+	[[ ${#} -eq 2 && ${verbosity} -ge 2 ]] || return 0
+
+	if type -p lspci &>/dev/null; then
+		lspci -d "${1}:${2}"
+	fi
+}
+
+#
+# scan pci bus
+say "Scanning PCI bus for common hardware..."
+for dev in /sys/bus/pci/devices/*/*; do
+	[[ -f ${dev}/vendor ]] && vendor=$(<${dev}/vendor) || continue
+	[[ -f ${dev}/device ]] && device=$(<${dev}/device) || continue
+	
+	lspci_lookup ${vendor} ${device}
+
+	case "${vendor}" in
+		0x168c)
+			# Atheros PCI
+			if kmodule_ok ath_pci; then
+				say "Madwifi installed."
+				continue
+			fi
+			echo "#"
+			echo "# Detected Atheros PCI wireless card."
+			echo "# It requires the MadWifi driver to operate."
+			echo "# Follow these instructions to install MadWifi:"
+			echo "#"
+			echo "apt-get update"
+			echo "module-assistant --text-mode --non-inter auto-install madwifi"
+			echo "modprobe ath_pci"
+			echo ""
+			;;
+	esac
+done
