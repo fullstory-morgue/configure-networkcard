@@ -21,6 +21,17 @@ function say() {
 	[[ ${verbosity} ]] && echo ${@}
 }
 
+function kmodule_ok() {
+	local kmod="$(modinfo -n ${1} 2>/dev/null)"
+
+	if [[ -f ${kmod} ]]; then
+		say "Kernel module: ${kmod}"
+		return 0
+	fi
+
+	return 1
+}
+
 function firmware_ok() {
 	local fw="${1}" fw_dir="${2}"
 
@@ -148,50 +159,22 @@ for d in /sys/bus/*/drivers/*; do
 	esac
 done
 
-function kmodule_ok() {
-	local kmod="$(modinfo -n ${1} 2>/dev/null)"
-
-	if [[ -f ${kmod} ]]; then
-		say "Kernel module: ${kmod}"
-		return 0
-	fi
-
-	return 1
-}
-
-function lspci_lookup() {
-	[[ ${#} -eq 2 && ${verbosity} -ge 2 ]] || return 0
-
-	if type -p lspci &>/dev/null; then
-		lspci -d "${1}:${2}"
-	fi
-}
-
 #
-# scan pci bus
-say "Scanning PCI bus for common hardware..."
-for dev in /sys/bus/pci*/devices/*/*; do
-	[[ -f ${dev}/vendor ]] && vendor=$(<${dev}/vendor) || continue
-	[[ -f ${dev}/device ]] && device=$(<${dev}/device) || continue
-	
-	lspci_lookup ${vendor} ${device}
-
-	case "${vendor}" in
-		0x168c)
-			# Atheros PCI
-			if kmodule_ok ath_pci; then
-				say "Madwifi installed."
-				continue
-			fi
-			echo "#"
-			echo "# Detected Atheros PCI wireless card."
-			echo "# It requires the MadWifi driver to operate."
-			echo "# Follow these instructions to install MadWifi:"
-			echo "#"
-			echo "apt-get update"
-			echo "module-assistant --text-mode --non-inter auto-install madwifi"
-			echo "modprobe ath_pci"
-			echo ""
-			;;
-	esac
-done
+# look for atheros hardware
+#
+say "Looking for Atheros hardware..."
+if find /sys/devices/ -type f -name vendor -print0 | xargs -0 grep -s -q '0x168c'; then
+	if kmodule_ok ath_pci; then
+		say "Madwifi installed."
+	else
+		echo "#"
+		echo "# Detected Atheros PCI wireless card."
+		echo "# It requires the MadWifi driver to operate."
+		echo "# Follow these instructions to install MadWifi:"
+		echo "#"
+		echo "apt-get update"
+		echo "module-assistant --text-mode --non-inter auto-install madwifi"
+		echo "modprobe ath_pci"
+		echo ""
+	fi
+fi
