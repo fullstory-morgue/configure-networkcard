@@ -1,3 +1,9 @@
+configure-networkcard (0.6.45) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 21 Jun 2007 09:46:36 +0200
+
 configure-networkcard (0.6.44) unstable; urgency=low
 
   * Simplify detection of Atheros PCI wifi.
