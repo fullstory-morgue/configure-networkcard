@@ -1,4 +1,5 @@
-?package(configure-networkcard):needs="text" \
+?package(configure-networkcard): \
+	needs="X11" \
 	section="Apps/System" \
 	hints="sidux,Config" \
 	title="Configure Network" \
