@@ -1,8 +1,8 @@
-configure-networkcard (0.6.46) UNRELEASED; urgency=low
+configure-networkcard (0.6.46) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * update fw-detect to new firmware for iwl3945/ iwl4965.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 07 Jul 2007 15:32:56 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 21 Jul 2007 01:36:16 +0200
 
 configure-networkcard (0.6.45) unstable; urgency=low
 

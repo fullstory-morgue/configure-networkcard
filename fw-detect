@@ -82,7 +82,7 @@ for d in /sys/bus/*/drivers/*; do
 		iwl3945|iwl4965)
 			say "Driver:  ${driver}"
 			firmware_ok "iwlwifi-${driver#iwl}" && continue
-			fw="apt-get install iwlwifi-${driver#iwl}-ucode"
+			fw="apt-get install firmware-iwl${driver#iwl}"
 			;;
 		prism54)
 			say "Driver:  ${driver}"
