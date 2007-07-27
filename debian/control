@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: configure-networkcard
 Architecture: all
 Depends: ethtool, wireless-tools, dialog, pump, su-me (>= 0.2), sidux-xdg, ssft
-Recommends: xdialog, zenity
+Recommends: zenity
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
  sidux.

@@ -1,8 +1,9 @@
 configure-networkcard (0.6.49) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * don't recommend Xdialog any longer, it isn't used any longer.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 27 Jul 2007 14:21:15 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 27 Jul 2007 14:37:02 +0200
 
 configure-networkcard (0.6.48) unstable; urgency=low
 
