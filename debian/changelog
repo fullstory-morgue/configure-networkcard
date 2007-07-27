@@ -1,8 +1,14 @@
 configure-networkcard (0.6.48) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 23 Jul 2007 23:18:43 +0200
+  [ Horst Tritremmel ]
+  * changed Xdialog to ssft and zenity for netcardconfig
+  * empty string doesn't work with ssft_read_string or kdialog,
+  * this part is hardcoded to zenity or dialog
+
+ -- Horst Tritremmel <hjt@sidux.com>  Fri, 27 Jul 2007 10:19:58 +0200
 
 configure-networkcard (0.6.47) unstable; urgency=low
 
