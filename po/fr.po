@@ -1,0 +1,145 @@
+# translation of fr.po to Deutsch
+# French translations for PACKAGE package.
+# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Automatically generated, 2007.
+# Horst Tritremmel <hjt@sidux.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-07-30 13:27+0200\n"
+"PO-Revision-Date: 2007-07-30 16:39+0200\n"
+"Last-Translator: Horst Tritremmel <hjt@sidux.com>\n"
+"Language-Team: Deutsch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: netcardconfig:24
+msgid "Error: You must be root to run this script!"
+msgstr ""
+
+#: netcardconfig:229
+#, sh-format
+msgid ""
+"Enter the ESSID for ${DEVICENAME} \\n\\n\\n(empty for 'any', not "
+"recommended !)\\n"
+msgstr "Entrez l'ESSID pour ${DEVICENAME}\\n\\n\\n(ne rien mettre pour 'peu importe' n'est pas recommandé !)\\n"
+
+#: netcardconfig:231
+#, sh-format
+msgid "Enter the NWID (cell identifier)\\nfor ${DEVICENAME}, if needed\\n\\n\\n"
+msgstr "Entrez le NWID (cell identifier)\\npour ${DEVICENAME}, si nécessaire\\n\\n\\n"
+
+#: netcardconfig:233
+#, sh-format
+msgid ""
+"Enter the mode for ${DEVICENAME}\\n\\n(Managed(=default), Ad-Hoc, Master,"
+"\\nRepeater, Secondary, auto)\\n"
+msgstr "Entrez le mode pour ${DEVICENAME}\\n\\n(Managed(_fr=default), Ad-Hoc, Master,\\nRepeater, Secondary, auto)\\n"
+
+#: netcardconfig:235
+#, sh-format
+msgid ""
+"Enter channel number for ${DEVICENAME} \\n\\n(0 bis 16, empty for auto or if "
+"you want to\\n enter the frequency next)\\n"
+msgstr "Entrez numéro de canal pour ${DEVICENAME}\\n\\n(0 à 16, vide pour auto ou si vous voulez\\n entrer la fréquence ensuite)\\n"
+
+#: netcardconfig:238
+#, sh-format
+msgid "Enter the frequency for ${DEVICENAME} \\n\\n(e.g 2.412G, empty for auto)"
+msgstr "Entrez la fréquence pour ${DEVICENAME}\\n\\n(ex: 2.412G, vide pour auto)"
+
+#: netcardconfig:263
+msgid "Enable WPA support?"
+msgstr "Activer la protection WPA?"
+
+#: netcardconfig:296
+#, sh-format
+msgid "Enter the WPA Passphrase\\nfor ${ESSID}"
+msgstr "Entrez le mot-de-passe WPA pour ${ESSID}"
+
+#: netcardconfig:312
+#, sh-format
+msgid ""
+"Enter the encryption key\\nfor ${DEVICENAME} \\n\\n(empty for cleartext, not "
+"recommended!!)"
+msgstr "Entrez la clé de cryptage\\npour ${DEVICENAME}\\n\\n(vide pour texte en clair, non recommandé !!)"
+
+#: netcardconfig:315
+#, sh-format
+msgid ""
+"Would you like to store your wep key in it's own private file "
+"(${DEVICENAME})? If you say no, your wep key will be stored in /etc/network/"
+"interfaces and will be readable by any account on your system.  You may want "
+"to 'chmod 700 /etc/network/interfaces' if you answer no to this question"
+msgstr "Clé WEP sauvée dans un fichier privé (${DEVICENAME})? Si vous répondez non ici, la clé WEP sera stockée dans /etc/network/interfaces et pourra être accessible à tous les utilisateurs de la machine. Peut-être serait-il alors judicieux de fixer ainsi les droits de 'interfaces': 'chmod 700 /etc/network/interfaces'"
+
+#: netcardconfig:321
+#, sh-format
+msgid ""
+"Enter additional parameters for\\n'iwconfig ${DEVICENAME}' if needed, e.g.\\n"
+"\\n\\nsens -80  rts 512  frag 512  rate 5.5M"
+msgstr "Entrez des paramètres additionnels pour\\n'iwconfig ${DEVICENAME}' si nécessaire, comme \\n\\n\\nsens -80  rts 512  frag 512  rate 5.5M"
+
+#: netcardconfig:323
+#, sh-format
+msgid "Enter additional parameters for\\n'iwspy ${DEVICENAME}' if needed\\n\\n\\n"
+msgstr "Entrer des paramètres additionnels pour\\n'iwspy ${DEVICENAME}' si nécessaire\\n\\n\\n"
+
+#: netcardconfig:325
+#, sh-format
+msgid "Enter additional parameters for\\n'iwpriv ${DEVICENAME}' if needed\\n\\n\\n"
+msgstr "Entrer des paramètres additionnels pour\\n'iwpriv ${DEVICENAME}' si nécessaire\\n\\n\\n"
+
+#: netcardconfig:330
+msgid "Use DHCP broadcast?"
+msgstr "Voulez-vous utiliser DHCP?"
+
+#: netcardconfig:358
+#, sh-format
+msgid "Please enter IP Address for ${DV}"
+msgstr "Entrez une adresse IP pour ${DV}"
+
+#: netcardconfig:360
+#, sh-format
+msgid "Please enter Network Mask for ${DV}"
+msgstr "Entrez le Masque de Sous-réseau pour ${DV}"
+
+#: netcardconfig:362
+#, sh-format
+msgid "Please enter Broadcast Address for ${DV}"
+msgstr "Entrez l'adresse Broadcast pour ${DV}"
+
+#: netcardconfig:364
+msgid "Please enter Default Gateway"
+msgstr "Entrez l'IP de la Passerelle par Défaut"
+
+#: netcardconfig:370
+msgid "Please enter Nameserver(s)"
+msgstr "Entrez Les DNS de votre FAI"
+
+#: netcardconfig:482
+msgid "No supported network cards found."
+msgstr "Aucune carte réseau supportée trouvée."
+
+#: netcardconfig:518
+msgid "Device"
+msgstr ""
+
+#: netcardconfig:518
+msgid "Please select network device"
+msgstr "Sélectionnez la carte réseau, svp"
+
+#: netcardconfig:539
+msgid "Failed to bring up the interface, would you like to reconfigure it?"
+msgstr ""
+
+#: netcardconfig:541
+msgid "Interface enabled, do you want it auto enabled at boot?"
+msgstr ""
+
