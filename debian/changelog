@@ -1,9 +1,13 @@
 configure-networkcard (0.6.49) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
   * don't recommend Xdialog any longer, it isn't used any longer.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 27 Jul 2007 14:37:02 +0200
+  [ Horst Tritremmel ]
+  * add gettext support and german language file for netcardconfig
+
+ -- Horst Tritremmel <hjt@sidux.com>  Mon, 30 Jul 2007 14:14:41 +0200
 
 configure-networkcard (0.6.48) unstable; urgency=low
 

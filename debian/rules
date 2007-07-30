@@ -3,6 +3,10 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/dpatch.mk
 
+build/configure-networkcard::
+	# Gettext Internationalisation (i18n)
+	DESTDIR=$(CURDIR)/debian/configure-networkcard $(CURDIR)/po/make_po.sh netcardconfig.mo
+
 install/configure-networkcard::
 	mkdir -p debian/configure-networkcard/usr/share/pixmaps
 	convert icons/hicolor/32x32/apps/sidux-netcard.png \

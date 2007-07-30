@@ -8,7 +8,28 @@
 PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 export PATH
 
-[ "$UID" -ne 0 ] && exec su-me $0 "$@"
+# we need gettext (is loaded in ssft.sh or cloned...)
+if [ -f /usr/bin/gettext.sh ]; then
+	. /usr/bin/gettext.sh || exit 1
+else
+	exit 1
+fi
+#---------------------------------------------------------------------
+# we need root rights
+#---------------------------------------------------------------------
+SU_ME=$(type -p su-me)  || SU_ME="/usr/bin/su-me"
+if [ "$UID" -ne 0 ]; then
+	[ -x "$SU_ME" ] && exec "$SU_ME" "$0" "$@"
+
+	echo "$(gettext "Error: You must be root to run this script!")"
+	exit 1
+fi
+
+TEXTDOMAIN="netcardconfig"
+export TEXTDOMAIN
+TEXTDOMAINDIR=/usr/share/locale
+export TEXTDOMAINDIR
+
 
 bailout() {
 	rm -f "$TMP"
@@ -205,16 +226,16 @@ configiface() {
 			rm -f "$TMP"
 		fi
 			
-		VAR="ESSID";   ssftreadfunc "${!VAR}" "Enter the ESSID for $DEVICENAME \n\n\n(empty for 'any', not recommended !)\n"; [ -z "$ESSID" ] && ESSID="any"
+		VAR="ESSID";   ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the ESSID for \${DEVICENAME} \n\n\n(empty for 'any', not recommended !)\n")"; [ -z "$ESSID" ] && ESSID="any"
 
-		VAR="NWID";    ssftreadfunc "${!VAR}" "Enter the NWID (cell identifier)\nfor $DEVICENAME, if needed\n\n\n"
+		VAR="NWID";    ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the NWID (cell identifier)\nfor \${DEVICENAME}, if needed\n\n\n")"
 	
-		VAR="MODE";    ssftreadfunc "${!VAR}" "Enter the mode for $DEVICENAME\n\n(Managed(=default), Ad-Hoc, Master,\nRepeater, Secondary, auto)\n"; [ -z "$MODE" ] && MODE="Managed"
+		VAR="MODE";    ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the mode for \${DEVICENAME}\n\n(Managed(=default), Ad-Hoc, Master,\nRepeater, Secondary, auto)\n")"; [ -z "$MODE" ] && MODE="Managed"
 
-		VAR="CHANNEL"; ssftreadfunc "${!VAR}" "Enter channel number for $DEVICENAME \n\n(0 bis 16, empty for auto or if you want to\n enter the frequency next)\n"
+		VAR="CHANNEL"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter channel number for \${DEVICENAME} \n\n(0 bis 16, empty for auto or if you want to\n enter the frequency next)\n")"
 
 		if [ -z "$CHANNEL" ]; then
-			VAR="FREQ"; ssftreadfunc "${!VAR}" "Enter the frequency for $DEVICENAME \n\n(e.g 2.412G, empty for auto)"
+			VAR="FREQ"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the frequency for \${DEVICENAME} \n\n(e.g 2.412G, empty for auto)")"
 		fi
 
 		WPAON=0
@@ -239,7 +260,7 @@ configiface() {
 			WPAON=-1
 			
 		if [ -n "$WPA_DEV" ]; then
-			if ssft_yesno "" "Enable WPA support?"; then
+			if ssft_yesno "" "$(gettext "Enable WPA support?")"; then
 				# Other wpa options
 				# scan_ssid [0]|1
 				# bssid 00:11:22:33:44:55
@@ -272,7 +293,7 @@ configiface() {
 						}
 					}
 					' /etc/network/interfaces)
-				VAR="WPASECRET"; ssftreadfunc "${!VAR}" "Enter the WPA Passphrase\nfor $ESSID"
+				VAR="WPASECRET"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the WPA Passphrase\nfor \${ESSID}")"
 				
 				case $WPA_DEV in
 					hostap)
@@ -288,25 +309,25 @@ configiface() {
 		
 		# No need for a wep key if we are using wpa
 		if [ ! $WPAON -eq 1 ]; then
-			VAR="KEY"; ssftreadfunc "${!VAR}" "Enter the encryption key\nfor $DEVICENAME \n\n(empty for cleartext, not recommended!!)"
+			VAR="KEY"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the encryption key\nfor \${DEVICENAME} \n\n(empty for cleartext, not recommended!!)")"
 		
 			if [ -n "$KEY" -a "$PUBKEY" -eq 0 ]; then
-				if ! ssft_yesno "" "Would you like to store your wep key in it's own private file ($DEVICENAME)? If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question"; then
+				if ! ssft_yesno "" "$(eval_gettext "Would you like to store your wep key in it's own private file (\${DEVICENAME})? If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question")"; then
 					PUBKEY=1
 				fi
 			fi
 		fi
 		
-		VAR="IWCONFIG"; ssftreadfunc "${!VAR}" "Enter additional parameters for\n'iwconfig $DEVICENAME' if needed, e.g.\n\n\nsens -80  rts 512  frag 512  rate 5.5M"
+		VAR="IWCONFIG"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter additional parameters for\n'iwconfig \${DEVICENAME}' if needed, e.g.\n\n\nsens -80  rts 512  frag 512  rate 5.5M")"
 		
-		VAR="IWSPY";    ssftreadfunc "${!VAR}" "Enter additional parameters for\n'iwspy $DEVICENAME' if needed\n\n\n"
+		VAR="IWSPY";    ssftreadfunc "${!VAR}" "$(eval_gettext "Enter additional parameters for\n'iwspy \${DEVICENAME}' if needed\n\n\n")"
 	
-		VAR="IWPRIV";   ssftreadfunc "${!VAR}" "Enter additional parameters for\n'iwpriv $DEVICENAME' if needed\n\n\n"
+		VAR="IWPRIV";   ssftreadfunc "${!VAR}" "$(eval_gettext "Enter additional parameters for\n'iwpriv \${DEVICENAME}' if needed\n\n\n")"
 
 		writeiwline
 	fi
 	
-	if ssft_yesno "" "Use DHCP broadcast?"; then
+	if ssft_yesno "" "$(gettext "Use DHCP broadcast?")"; then
 		if [ -w /etc/network/interfaces ]; then
 			rm -f "$TMP"
 			awk	'/iface/{if(/'"$DV"'/){found=1}else{found=0}}
@@ -334,19 +355,19 @@ configiface() {
 		rm -f "$TMP"
 	fi
 	
-	VAR="IP"; ssftreadfunc "${IP:-192.168.0.1}" "Please enter IP Address for $DV"
+	VAR="IP"; ssftreadfunc "${IP:-192.168.0.1}" "$(eval_gettext "Please enter IP Address for \${DV}")"
 
-	VAR="NM"; ssftreadfunc "${NM:-255.255.255.0}" "Please enter Network Mask for $DV"
+	VAR="NM"; ssftreadfunc "${NM:-255.255.255.0}" "$(eval_gettext "Please enter Network Mask for \${DV}")"
 
-	VAR="BC"; ssftreadfunc "${BC:-${IP%.*}.255}" "Please enter Broadcast Address for $DV"
+	VAR="BC"; ssftreadfunc "${BC:-${IP%.*}.255}" "$(eval_gettext "Please enter Broadcast Address for \${DV}")"
 	
-	VAR="DG"; ssftreadfunc "${DG:-${IP%.*}.254}" "Please enter Default Gateway"
+	VAR="DG"; ssftreadfunc "${DG:-${IP%.*}.254}" "$(gettext "Please enter Default Gateway")"
 
 	if [ -f "/etc/resolv.conf" ]; then
 		NS="$(awk '/^nameserver/{printf "%s ",$2}' /etc/resolv.conf)"
 	fi
 	
-	VAR="NS"; ssftreadfunc "${NS:-${IP%.*}.254}" "Please enter Nameserver(s)"
+	VAR="NS"; ssftreadfunc "${NS:-${IP%.*}.254}" "$(gettext "Please enter Nameserver(s)")"
 	
 	if [ -w /etc/network/interfaces ]; then
 		awk	'/iface/{if(/'"$DV"'/){found=1}else{found=0}}
@@ -458,7 +479,7 @@ done
 #NETDEVICES="$(cat /proc/net/dev | awk -F: '/eth.:|lan.:|tr.:|wlan.:|ath.:|ra.:/{print $1}')"
 
 if [ -z "$NETDEVICES" ]; then
-	ssft_display_message "" "No supported network cards found."
+	ssft_display_message "" "$(gettext "No supported network cards found.")"
 	bailout
 fi
 
@@ -494,7 +515,7 @@ while (true); do
 		DV=$selectedCard-1
 	else
 		if [ "$count" -gt 1 ]; then
-			ssft_select_single "Device" "Please select network device" $DEVICELIST $EXITMENU  || bailout
+			ssft_select_single "$(gettext "Device")" "$(gettext "Please select network device")" $DEVICELIST $EXITMENU  || bailout
 
 			DV=$(echo "$SSFT_RESULT" | cut -d\) -f1)
 			[ "$SSFT_RESULT" = "$EXITMENU" ] && bailout
@@ -515,9 +536,9 @@ while (true); do
 		ifdown $DV
 		sleep 3
 		if ! ifup $DV; then
-			ssft_yesno "" "Failed to bring up the interface, would you like to reconfigure it?" || IFACEDONE="DONE"
+			ssft_yesno "" "$(gettext "Failed to bring up the interface, would you like to reconfigure it?")" || IFACEDONE="DONE"
 		else
-			ssft_yesno "" "Interface enabled, do you want it auto enabled at boot?" && addauto || remauto
+			ssft_yesno "" "$(gettext "Interface enabled, do you want it auto enabled at boot?")" && addauto || remauto
 			IFACEDONE="DONE"
 		fi
 	done
