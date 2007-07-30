@@ -61,7 +61,7 @@ msgstr "WPA-Unterstützung aktivieren?"
 #: netcardconfig:296
 #, sh-format
 msgid "Enter the WPA Passphrase\\nfor ${ESSID}"
-msgstr "WPA-Passwort eingeben für\\nfür ${ESSID}"
+msgstr "WPA-Passwort eingeben\\nfür ${ESSID}"
 
 #: netcardconfig:312
 #, sh-format
