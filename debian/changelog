@@ -1,8 +1,8 @@
-configure-networkcard (0.7.1) UNRELEASED; urgency=low
+configure-networkcard (0.7.1) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * add gettext to (build-) dependencies, thanks to x-un-i for noticing.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Jul 2007 20:46:27 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Jul 2007 23:38:03 +0200
 
 configure-networkcard (0.7.0) unstable; urgency=low
 

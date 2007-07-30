@@ -2,12 +2,12 @@ Source: configure-networkcard
 Section: net
 Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Build-Depends: cdbs, debhelper (>= 5), dpatch, imagemagick
+Build-Depends: cdbs, debhelper (>= 5), dpatch, imagemagick, gettext
 Standards-Version: 3.7.2
 
 Package: configure-networkcard
 Architecture: all
-Depends: ethtool, wireless-tools, dialog, pump, su-me (>= 0.2), sidux-xdg, ssft
+Depends: ethtool, wireless-tools, dialog, pump, su-me (>= 0.2), sidux-xdg, ssft, gettext
 Recommends: zenity
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
