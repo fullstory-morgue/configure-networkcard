@@ -8,8 +8,9 @@ configure-networkcard (0.6.49) UNRELEASED; urgency=low
   * add gettext support and german language file for netcardconfig
   * de.po update
   * add fr.po and es.po
+  * add it.po 
 
- -- Horst Tritremmel <hjt@sidux.com>  Mon, 30 Jul 2007 16:46:02 +0200
+ -- Horst Tritremmel <hjt@sidux.com>  Mon, 30 Jul 2007 17:14:33 +0200
 
 configure-networkcard (0.6.48) unstable; urgency=low
 
