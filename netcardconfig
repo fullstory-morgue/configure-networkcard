@@ -413,27 +413,31 @@ ssftreadfunc() {
 #EOT
 
 	# empty strings doesn't work with ssft_read_string or kdialog :(
-	if [ -n "$DISPLAY" ]; then
+	if [ -n "${DISPLAY}" -a -x "${ZENITYSH}" ]; then
 		itext=$(echo "${2}" | sed -e 's%\\n%\
 %g')
 
-		msg=$(zenity --entry --title="" --text="${itext}" --entry-text="${1}" || printf "goodbye\n" )
+		msg=$(${ZENITYSH} --entry --title="" --text="${itext}" --entry-text="${1}" || printf "goodbye\n" )
 		[ "${msg}" = goodbye ] && bailout 1
 
-		read $VAR << EOT
+	else
+		[ -n "${DISPLAY}" ] && ssft_display_error "$(gettext "Error")" \
+			"$(gettext "please install zenity or start \"netcardconfig\" in runlevel 3 out of Xwindows (press <Ctrl>+<Alt>+<F1>, back to Xwindows with <Ctrl>+<Alt>+<F7>)!")" && \
+			bailout 1
+
+		msg=$(${DIALOGSH} --stdout --inputbox "${2}" 15 50 "${1}")
+	fi
+
+	read $VAR << EOT
 $(printf "${msg}\n")
 EOT
-
-	else
-		rm -f "$TMP"
-		dialog --inputbox "${2}" 15 50 "${1}" 2>"$TMP" || bailout 1
-		read $VAR <"$TMP" ; rm -f "$TMP"
-	fi
 
 }
 
 # determine system status
 SSFTSH="$(which ssft.sh)"			|| SSFTSH="/usr/bin/ssft.sh"
+ZENITYSH="$(which zenity)"			|| ZENITYSH="/usr/bin/zenity"
+DIALOGSH="$(which dialog)"			|| DIALOGSH="/usr/bin/dialog"
 
 # initialize ssft
 #[ -n "$DISPLAY" ] && [ -x /usr/bin/kdialog ] && SSFT_FRONTEND="kdialog"

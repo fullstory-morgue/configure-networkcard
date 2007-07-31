@@ -1,8 +1,13 @@
 configure-networkcard (0.7.2) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 30 Jul 2007 23:40:02 +0200
+  [ Horst Tritremmel ]
+  * check: is zenity installed
+  * start dialog without tempfile handling, use --stdout
+
+ -- Horst Tritremmel <hjt@sidux.com>  Tue, 31 Jul 2007 15:02:11 +0200
 
 configure-networkcard (0.7.1) unstable; urgency=low
 
