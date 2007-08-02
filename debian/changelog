@@ -1,8 +1,12 @@
 configure-networkcard (0.7.3) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 01 Aug 2007 13:46:35 +0200
+  [ Joaquim Boura ]
+  * pt language file
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Thu, 02 Aug 2007 23:31:38 +0200
 
 configure-networkcard (0.7.2) unstable; urgency=low
 
