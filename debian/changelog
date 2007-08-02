@@ -1,9 +1,5 @@
-configure-networkcard (0.7.3) UNRELEASED; urgency=low
+configure-networkcard (0.7.3) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Joaquim Boura ]
   * pt language file
 
  -- Joaquim Boura <x-un-i@sidux.com>  Thu, 02 Aug 2007 23:31:38 +0200
