@@ -1,9 +1,5 @@
-configure-networkcard (0.7.4) UNRELEASED; urgency=low
+configure-networkcard (0.7.4) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * add new message in bailout, thx to x-un-i
 
  -- Horst Tritremmel <hjt@sidux.com>  Tue, 07 Aug 2007 22:52:57 +0200
