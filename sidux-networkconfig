@@ -2493,7 +2493,6 @@ Rescue options:
 Extra options:
 -h			display this help
 -mh			some short informations (menu)
--u			update this script
 -v			show the version (date)
 "
 			exit-script

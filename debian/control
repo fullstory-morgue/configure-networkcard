@@ -2,7 +2,7 @@ Source: configure-networkcard
 Section: net
 Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Build-Depends: cdbs, debhelper (>= 5), dpatch, imagemagick, gettext
+Build-Depends: cdbs, debhelper (>= 5), imagemagick, gettext
 Standards-Version: 3.7.2
 
 Package: configure-networkcard

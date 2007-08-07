@@ -1,8 +1,12 @@
 configure-networkcard (0.7.4) unstable; urgency=low
 
+  [ Horst Tritremmel ]
   * add new message in bailout, thx to x-un-i
 
- -- Horst Tritremmel <hjt@sidux.com>  Tue, 07 Aug 2007 22:52:57 +0200
+  [ Stefan Lippers-Hollmann ]
+  * remove obsoleted patches, remove all patchsystems.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 08 Aug 2007 01:27:59 +0200
 
 configure-networkcard (0.7.3) unstable; urgency=low
 
