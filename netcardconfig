@@ -32,8 +32,13 @@ export TEXTDOMAINDIR
 
 
 bailout() {
-	rm -f "$TMP"
-	exit $1
+        rm -f "$TMP"
+        if [ -z "$1"  ] ;then
+                ssft_display_message "netcardconfig" "Success"
+        else
+                ssft_display_message "netcardconfig" "Abort"
+        fi
+        exit $1
 }
 
 # This function produces the IWOURLINE for interfaces
