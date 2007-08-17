@@ -72,7 +72,7 @@ for d in /sys/bus/*/drivers/*; do
 		bcm43xx*)
 			say "Driver:  ${driver}"
 			firmware_ok bcm43xx && continue
-			fw="apt-get install bc43xx-fwcutter"
+			fw="apt-get install bcm43xx-fwcutter"
 			;;
 		ipw2100|ipw2200)
 			say "Driver:  ${driver}"
