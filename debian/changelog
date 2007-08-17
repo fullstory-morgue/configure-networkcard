@@ -1,10 +1,5 @@
-configure-networkcard (0.7.5) UNRELEASED; urgency=low
+configure-networkcard (0.7.5) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Fabian Wuertz ]
-  * NOT RELEASED YET
   * fw-detect: bc43xx-fwcutter -> bcm43xx-fwcutter
 
  -- Fabian Wuertz <xadras@sidux.com>  Fri, 17 Aug 2007 18:49:34 +0200
