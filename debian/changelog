@@ -4,10 +4,11 @@ configure-networkcard (0.7.6) UNRELEASED; urgency=low
   * NOT RELEASED YET
 
   [ Joaquim Boura ]
-  * give a name to each window. 
-    use kstart --ontop to make windows popup over existing ones    
+  * give a name to each window.
+    use kstart --ontop to make windows popup over existing ones
+  * donot use kstart on the desktop file!!
 
- -- Joaquim Boura <x-un-i@sidux.com>  Fri, 24 Aug 2007 22:38:55 +0200
+ -- Joaquim Boura <x-un-i@sidux.com>  Fri, 24 Aug 2007 23:00:10 +0200
 
 configure-networkcard (0.7.5) unstable; urgency=low
 
