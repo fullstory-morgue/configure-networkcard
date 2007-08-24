@@ -1,9 +1,5 @@
-configure-networkcard (0.7.6) UNRELEASED; urgency=low
+configure-networkcard (0.7.6) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Joaquim Boura ]
   * give a name to each window.
     use kstart --ontop to make windows popup over existing ones
   * donot use kstart on the desktop file!!
