@@ -1,8 +1,13 @@
 configure-networkcard (0.7.6) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 18 Aug 2007 01:42:29 +0200
+  [ Joaquim Boura ]
+  * give a name to each window. 
+    use kstart --ontop to make windows popup over existing ones    
+
+ -- Joaquim Boura <x-un-i@sidux.com>  Fri, 24 Aug 2007 22:38:55 +0200
 
 configure-networkcard (0.7.5) unstable; urgency=low
 

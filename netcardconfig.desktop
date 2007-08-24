@@ -1,7 +1,7 @@
 [Desktop Entry]
 Comment[de]=Netzwerkkarte konfigurieren
 Comment[es]=Configuración de la tarjeta de red
-Exec=/usr/sbin/netcardconfig
+Exec=kstart --ontop /usr/sbin/netcardconfig
 Icon=sidux-netcard
 Name[de]=Netzwerkkarte konfigurieren
 Name[es]=Configuración de la tarjeta de red

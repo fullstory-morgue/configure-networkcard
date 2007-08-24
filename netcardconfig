@@ -34,9 +34,9 @@ export TEXTDOMAINDIR
 bailout() {
         rm -f "$TMP"
         if [ -z "$1"  ] ;then
-                ssft_display_message "netcardconfig" "Success"
+                ssft_display_message "$TEXTDOMAIN" "Success"
         else
-                ssft_display_message "netcardconfig" "Abort"
+                ssft_display_message "$TEXTDOMAIN" "Abort"
         fi
         exit $1
 }
@@ -150,7 +150,7 @@ configiface() {
 	# wireless config
 	WLDEVICE="$(LANG=C LC_MESSAGEWS=C iwconfig $DV 2>/dev/null | awk '/802\.11|READY|ESSID/{print $1}')"
 	WLDEVICECOUNT="$(LANG=C LC_MESSAGEWS=C iwconfig $DV 2>/dev/null | wc -l)"
-	if [ $iswireless -gt 0 ] && ssft_yesno "" "Setup wireless options?"; then
+	if [ $iswireless -gt 0 ] && ssft_yesno "$TEXTDOMAIN" "Setup wireless options?"; then
 		ESSID=""
 		NWID=""
 		MODE=""
@@ -265,7 +265,7 @@ configiface() {
 			WPAON=-1
 			
 		if [ -n "$WPA_DEV" ]; then
-			if ssft_yesno "" "$(gettext "Enable WPA support?")"; then
+			if ssft_yesno "$TEXTDOMAIN" "$(gettext "Enable WPA support?")"; then
 				# Other wpa options
 				# scan_ssid [0]|1
 				# bssid 00:11:22:33:44:55
@@ -317,7 +317,7 @@ configiface() {
 			VAR="KEY"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the encryption key\nfor \${DEVICENAME} \n\n(empty for cleartext, not recommended!!)")"
 		
 			if [ -n "$KEY" -a "$PUBKEY" -eq 0 ]; then
-				if ! ssft_yesno "" "$(eval_gettext "Would you like to store your wep key in it's own private file (\${DEVICENAME})? If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question")"; then
+				if ! ssft_yesno "$TEXTDOMAIN" "$(eval_gettext "Would you like to store your wep key in it's own private file (\${DEVICENAME})? If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question")"; then
 					PUBKEY=1
 				fi
 			fi
@@ -332,7 +332,7 @@ configiface() {
 		writeiwline
 	fi
 	
-	if ssft_yesno "" "$(gettext "Use DHCP broadcast?")"; then
+	if ssft_yesno "$TEXTDOMAIN" "$(gettext "Use DHCP broadcast?")"; then
 		if [ -w /etc/network/interfaces ]; then
 			rm -f "$TMP"
 			awk	'/iface/{if(/'"$DV"'/){found=1}else{found=0}}
@@ -422,7 +422,7 @@ ssftreadfunc() {
 		itext=$(echo "${2}" | sed -e 's%\\n%\
 %g')
 
-		msg=$(${ZENITYSH} --entry --title="" --text="${itext}" --entry-text="${1}" || printf "goodbye\n" )
+		msg=$(${ZENITYSH} --entry --title="$TEXTDOMAIN" --text="${itext}" --entry-text="${1}" || printf "goodbye\n" )
 		[ "${msg}" = goodbye ] && bailout 1
 
 	else
@@ -488,7 +488,7 @@ done
 #NETDEVICES="$(cat /proc/net/dev | awk -F: '/eth.:|lan.:|tr.:|wlan.:|ath.:|ra.:/{print $1}')"
 
 if [ -z "$NETDEVICES" ]; then
-	ssft_display_message "" "$(gettext "No supported network cards found.")"
+	ssft_display_message "$TEXTDOMAIN" "$(gettext "No supported network cards found.")"
 	bailout
 fi
 
@@ -545,9 +545,9 @@ while (true); do
 		ifdown $DV
 		sleep 3
 		if ! ifup $DV; then
-			ssft_yesno "" "$(gettext "Failed to bring up the interface, would you like to reconfigure it?")" || IFACEDONE="DONE"
+			ssft_yesno "$TEXTDOMAIN" "$(gettext "Failed to bring up the interface, would you like to reconfigure it?")" || IFACEDONE="DONE"
 		else
-			ssft_yesno "" "$(gettext "Interface enabled, do you want it auto enabled at boot?")" && addauto || remauto
+			ssft_yesno "$TEXTDOMAIN" "$(gettext "Interface enabled, do you want it auto enabled at boot?")" && addauto || remauto
 			IFACEDONE="DONE"
 		fi
 	done
