@@ -1,3 +1,9 @@
+configure-networkcard (0.7.7) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 25 Aug 2007 00:09:40 +0200
+
 configure-networkcard (0.7.6) unstable; urgency=low
 
   * give a name to each window.
