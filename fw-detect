@@ -99,8 +99,7 @@ for d in /sys/bus/*/drivers/*; do
 		rt73*)
 			say "Driver:  ${driver}"
 			firmware_ok rt73 && continue
-			fw="http://www.ralinktech.com/ralink/Home/Support/Linux.html"
-			fw_url="http://www.ralinktech.com.tw/data/RT71W_Firmware_V1.8.zip"
+			fw="apt-get install rt73-fwcutter"
 			;;
 		zd1201)
 			say "Driver:  ${driver}"
