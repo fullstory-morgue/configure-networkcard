@@ -1,3 +1,9 @@
+configure-networkcard (0.7.8) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 07 Sep 2007 14:45:24 +0200
+
 configure-networkcard (0.7.7) unstable; urgency=low
 
   * the firmware for RaLink rt73 is now available by using rt73-fwcutter.
