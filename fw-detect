@@ -71,12 +71,12 @@ for d in /sys/bus/*/drivers/*; do
 			;;
 		b43)
 			say "Driver:  ${driver}"
-			firmware_ok b43/ucode && continue
+			firmware_ok *.fw /lib/firmware/b43 && continue
 			fw="apt-get install b43-fwcutter"
 			;;
 		b43legacy)
 			say "Driver:  ${driver}"
-			firmware_ok b43legacy/ucode && continue
+			firmware_ok *.fw /lib/firmware/b43legacy && continue
 			fw="apt-get install b43-fwcutter"
 			;;
 		bcm43xx*)
