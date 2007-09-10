@@ -69,10 +69,20 @@ for d in /sys/bus/*/drivers/*; do
 			firmware_ok atmel_at76c5 && continue
 			fw="apt-get install atmel-firmware"
 			;;
+		b43)
+			say "Driver:  ${driver}"
+			firmware_ok b43/ucode && continue
+			fw="apt-get install b43-fwcutter"
+			;;
+		b43legacy)
+			say "Driver:  ${driver}"
+			firmware_ok b43legacy/ucode && continue
+			fw="apt-get install b43-fwcutter"
+			;;
 		bcm43xx*)
 			say "Driver:  ${driver}"
 			firmware_ok bcm43xx && continue
-			fw="apt-get install bcm43xx-fwcutter"
+			fw="apt-get install bcm43xx-fwcutter b43-fwcutter"
 			;;
 		ipw2100|ipw2200)
 			say "Driver:  ${driver}"
