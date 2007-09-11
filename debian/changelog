@@ -1,8 +1,9 @@
 configure-networkcard (0.7.9) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * add VCS control headers.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 10 Sep 2007 11:45:21 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 11 Sep 2007 20:08:39 +0200
 
 configure-networkcard (0.7.8) unstable; urgency=low
 
