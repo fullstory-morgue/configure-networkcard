@@ -1,7 +1,6 @@
-configure-networkcard (0.7.9) UNRELEASED; urgency=low
+configure-networkcard (0.7.9) unstable; urgency=low
 
   [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
   * add VCS control headers.
 
   [ Kel Modderman ]
