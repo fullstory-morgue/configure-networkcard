@@ -79,7 +79,7 @@ BEGIN {
 		else if (detect_wifi)	{ if (iface[ifaces[i], "CONN"] == "wireless") print ifaces[i]; continue }
 		else if (detect_wired)	{ if (iface[ifaces[i], "CONN"] == "ethernet") print ifaces[i]; continue }
 
-		if (iface[ifaces[i], "subsystems"] == "pci") {
+		if (iface[ifaces[i], "subsystems"] == "pci" || iface[ifaces[i], "subsystems"] == "ssb") {
 			cmd = sprintf("lspci -d %s:%s", iface[ifaces[i], "vendor"], iface[ifaces[i], "device"])
 			if ((cmd | getline) > 0) iface[ifaces[i], "DESC"] = gensub(/^.+:[ \t]+/, "", "a")
 		}

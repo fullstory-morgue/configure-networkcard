@@ -1,9 +1,13 @@
 configure-networkcard (0.7.9) UNRELEASED; urgency=low
 
+  [ Stefan Lippers-Hollmann ]
   * NOT RELEASED YET
   * add VCS control headers.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 11 Sep 2007 20:08:39 +0200
+  [ Kel Modderman ]
+  * nicinfo: allow for ssb bus, broadcom phy's.
+
+ -- Kel Modderman <kel@otaku42.de>  Sun, 23 Sep 2007 18:36:43 +1000
 
 configure-networkcard (0.7.8) unstable; urgency=low
 
