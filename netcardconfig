@@ -61,14 +61,8 @@ writeiwline() {
 	fi
 	
 	if [ -n "$KEY" ]; then
-		if [ "$PUBKEY" -eq 1 ]; then
-			# Store the key in interfaces in wireless-key
-			IWOURLINE="$IWOURLINE wireless-key $KEY\n"
-		else
-			# Store the key in /etc/network/wep.$DV which is root readable only
-			# Use pre-up in interfaces to read and set it
-			echo "$KEY" > /etc/network/wep.$DV && chmod 700 /etc/network/wep.$DV && IWOURLINE="$IWOURLINE pre-up KEY=\$(cat /etc/network/wep.$DV) && iwconfig $DV key \$KEY\n"
-		fi
+		# Store the key in interfaces in wireless-key
+		IWOURLINE="$IWOURLINE wireless-key $KEY\n"
 	fi
 	
 	if [ -n "$IWCONFIG" ]; then 
@@ -213,18 +207,6 @@ configiface() {
 			
 			ESSID=$(echo $ESSID | tr "~" " " | sed 's/ *$//')
 			
-			if [ -z "$KEY" ]; then
-				KEY=$(cat /etc/network/wep.$DV 2>/dev/null)
-				
-				if [ -z "$KEY" ]; then
-					PUBKEY=0
-				else
-					PUBKEY=-1
-				fi
-			else
-				PUBKEY=1
-			fi
-			
 			#echo "DEBUG:E:$ESSID N:$NWID M:$MODE C:$CHANNEL F:$FREQ S:$SENS R:$RATE K:$KEY R:$RTS F:$FRAG I:$IWCONFIG I:$IWSPY I:$IWPRIV"
 			rm -f "$TMP"
 		fi
@@ -312,13 +294,7 @@ configiface() {
 		
 		# No need for a wep key if we are using wpa
 		if [ ! $WPAON -eq 1 ]; then
-			VAR="KEY"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the encryption key\nfor \${DEVICENAME} \n\n(empty for cleartext, not recommended!!)")"
-		
-			if [ -n "$KEY" -a "$PUBKEY" -eq 0 ]; then
-				if ! ssft_yesno "$TEXTDOMAIN" "$(eval_gettext "Would you like to store your wep key in it's own private file (\${DEVICENAME})? If you say no, your wep key will be stored in /etc/network/interfaces and will be readable by any account on your system.  You may want to 'chmod 700 /etc/network/interfaces' if you answer no to this question")"; then
-					PUBKEY=1
-				fi
-			fi
+			VAR="KEY"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the encryption key\nfor \${DEVICENAME} \n")"
 		fi
 		
 		VAR="IWCONFIG"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter additional parameters for\n'iwconfig \${DEVICENAME}' if needed, e.g.\n\n\nsens -80  rts 512  frag 512  rate 5.5M")"
