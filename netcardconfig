@@ -71,8 +71,6 @@ writeiwline() {
 		fi
 	fi
 	
-	[ -d /sys/module/rt2??0/ ] && IWPREUPLINE="$IWPREUPLINE pre-up /sbin/ifconfig $DV up\n"
-	
 	if [ -n "$IWCONFIG" ]; then 
 		IWPREUPLINE="$IWPREUPLINE iwconfig $IWCONFIG\n"
 	fi
