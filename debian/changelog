@@ -1,9 +1,8 @@
-configure-networkcard (0.7.11) UNRELEASED; urgency=low
+configure-networkcard (0.7.11) unstable; urgency=low
 
-  * NOT RELEASED YET
   * Update debian menu section as per new subpolicy.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 25 Oct 2007 22:12:06 +1000
+ -- Kel Modderman <kel@otaku42.de>  Thu, 25 Oct 2007 22:12:06 +1000
 
 configure-networkcard (0.7.10) unstable; urgency=low
 
