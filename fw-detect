@@ -141,6 +141,9 @@ for d in /sys/bus/*/drivers/*; do
 			echo "modprobe -r ${driver}"
 			echo "modprobe ${driver}"
 			echo ""
+			echo "You must first configure apt to install this non-free software,"
+			echo "refer to the offline manual that came with this distribution."
+			echo ""
 			;;
 		http*)
 			echo "#"
@@ -184,6 +187,9 @@ if find /sys/devices/ -type f -name vendor -print0 | xargs -0 grep -s -q '0x168c
 		echo "apt-get update"
 		echo "module-assistant --text-mode --non-inter auto-install madwifi"
 		echo "modprobe ath_pci"
+		echo ""
+		echo "You must first configure apt to install this non-free software,"
+		echo "refer to the offline manual that came with this distribution."
 		echo ""
 	fi
 fi

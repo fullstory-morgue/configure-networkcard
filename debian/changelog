@@ -1,8 +1,9 @@
 configure-networkcard (0.7.12) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  * fw-detect: give a hint that contrib/non-free needs to be setup for
+    instructions to succeed.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 25 Oct 2007 18:20:41 +0200
+ -- Kel Modderman <kel@otaku42.de>  Wed, 31 Oct 2007 23:14:33 +1000
 
 configure-networkcard (0.7.11) unstable; urgency=low
 
