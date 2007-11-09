@@ -1,3 +1,9 @@
+configure-networkcard (0.7.13) unstable; urgency=low
+
+  * adding gawk to dependencies.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 09 Nov 2007 01:50:42 +0100
+
 configure-networkcard (0.7.12) unstable; urgency=low
 
   * fw-detect: give a hint that contrib/non-free needs to be setup for
