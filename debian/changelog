@@ -1,4 +1,4 @@
-configure-networkcard (0.7.12) UNRELEASED; urgency=low
+configure-networkcard (0.7.12) unstable; urgency=low
 
   * fw-detect: give a hint that contrib/non-free needs to be setup for
     instructions to succeed.
