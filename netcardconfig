@@ -217,7 +217,7 @@ configiface() {
 	
 		VAR="MODE";    ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the mode for \${DEVICENAME}\n\n(Managed(=default), Ad-Hoc, Master,\nRepeater, Secondary, auto)\n")"; [ -z "$MODE" ] && MODE="Managed"
 
-		VAR="CHANNEL"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter channel number for \${DEVICENAME} \n\n(0 bis 16, empty for auto or if you want to\n enter the frequency next)\n")"
+		VAR="CHANNEL"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter channel number for \${DEVICENAME} \n\n(0 to 16, empty for auto or if you want to\n enter the frequency next)\n")"
 
 		if [ -z "$CHANNEL" ]; then
 			VAR="FREQ"; ssftreadfunc "${!VAR}" "$(eval_gettext "Enter the frequency for \${DEVICENAME} \n\n(e.g 2.412G, empty for auto)")"
