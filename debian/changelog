@@ -1,9 +1,5 @@
-configure-networkcard (0.7.14) UNRELEASED; urgency=low
+configure-networkcard (0.7.14) unstable; urgency=low
 
-  [ Stefan Lippers-Hollmann ]
-  * NOT RELEASED YET
-
-  [ Horst Tritremmel ]
   * s/bis/to
 
  -- Horst Tritremmel <hjt@sidux.com>  Thu, 15 Nov 2007 14:01:58 +0100
