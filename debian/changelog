@@ -1,3 +1,9 @@
+configure-networkcard (0.7.16) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 08 Dec 2007 16:50:44 +0100
+
 configure-networkcard (0.7.15) unstable; urgency=low
 
   * update to Standards-Version 3.7.3, no changes necessary.
