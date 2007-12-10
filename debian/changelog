@@ -1,8 +1,10 @@
-configure-networkcard (0.7.16) UNRELEASED; urgency=low
+configure-networkcard (0.7.16) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * fw-detect:
+    - fix hints for RaLink cards.
+    - add p54pci/ p54usb handling.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 08 Dec 2007 16:50:44 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 10 Dec 2007 01:54:45 +0100
 
 configure-networkcard (0.7.15) unstable; urgency=low
 

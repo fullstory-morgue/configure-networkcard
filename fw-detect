@@ -94,22 +94,34 @@ for d in /sys/bus/*/drivers/*; do
 			firmware_ok "iwlwifi-${driver#iwl}" && continue
 			fw="apt-get install firmware-iwlwifi"
 			;;
-		prism54)
+		p54pci)
 			say "Driver:  ${driver}"
 			if firmware_ok [12]\.[0-9]\.[0-9]\.[0-9]\.arm || firmware_ok isl; then
 				continue
 			fi
 			fw="http://prism54.org/firmware/"
 			;;
+		p54usb)
+			say "Driver:  ${driver}"
+			if firmware_ok isl3890usb || firmware_ok isl3887usb_bare; then
+				continue
+			fi
+			fw="http://jbnote.free.fr/prism54usb/"
+			;;
+		prism54)
+			say "Driver:  ${driver}"
+			firmware_ok isl3886 && continue
+			fw="http://jbnote.free.fr/prism54usb/"
+			;;
 		rt61*)
 			say "Driver:  ${driver}"
 			firmware_ok rt2561 && continue
-			fw="apt-get install rt61-fwcutter"
+			fw="apt-get install firmware-ralink"
 			;;
 		rt73*)
 			say "Driver:  ${driver}"
 			firmware_ok rt73 && continue
-			fw="apt-get install rt73-fwcutter"
+			fw="apt-get install firmware-ralink"
 			;;
 		zd1201)
 			say "Driver:  ${driver}"
