@@ -106,12 +106,12 @@ for d in /sys/bus/*/drivers/*; do
 			if firmware_ok isl3890usb || firmware_ok isl3887usb_bare; then
 				continue
 			fi
-			fw="http://jbnote.free.fr/prism54usb/"
+			fw="http://jbnote.free.fr/prism54usb/ - use /lib/firmware/"
 			;;
 		prism54)
 			say "Driver:  ${driver}"
 			firmware_ok isl3886 && continue
-			fw="http://jbnote.free.fr/prism54usb/"
+			fw="http://jbnote.free.fr/prism54usb/ - use /lib/firmware/"
 			;;
 		rt61*)
 			say "Driver:  ${driver}"

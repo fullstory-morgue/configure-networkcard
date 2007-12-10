@@ -1,8 +1,9 @@
-configure-networkcard (0.7.17) UNRELEASED; urgency=low
+configure-networkcard (0.7.17) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * add debian specific info about /lib/firmware/ in favour of
+    /usr/lib/hotplug/firmware/.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 10 Dec 2007 01:57:15 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 10 Dec 2007 02:03:48 +0100
 
 configure-networkcard (0.7.16) unstable; urgency=low
 
