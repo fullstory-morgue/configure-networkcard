@@ -1,3 +1,9 @@
+configure-networkcard (0.7.19) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 11 Dec 2007 13:13:12 +0100
+
 configure-networkcard (0.7.18) unstable; urgency=low
 
   * call ifconfig with LANG=C LC_MESSAGEWS=C, thanks to muchan for noticing.
