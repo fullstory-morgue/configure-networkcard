@@ -1,10 +1,15 @@
 [Desktop Entry]
 Comment[de]=Netzwerkkarte konfigurieren
+Comment[ru]=Конфигурация сетового адаптеры
 Comment[es]=Configuración de la tarjeta de red
 Exec=/usr/sbin/netcardconfig
 Icon=sidux-netcard
-Name[de]=Netzwerkkarte konfigurieren
-Name[es]=Configuración de la tarjeta de red
 Name=Network card configuration
+Name[de]=Netzwerkkarte konfigurieren
+Name[ru]=Конфигурация сетового адаптера
+Name[es]=Configuración de la tarjeta de red
+Name[pt]=Configuração da placa de rede
+Name[es]=Configuração da placa de rede
+
 Type=Application
 Categories=sidux;Net
