@@ -1,3 +1,9 @@
+configure-networkcard (0.7.20) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 19 Dec 2007 11:12:41 +0100
+
 configure-networkcard (0.7.19) unstable; urgency=low
 
   * Translation thanks to RoEn
