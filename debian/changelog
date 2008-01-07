@@ -1,8 +1,8 @@
-configure-networkcard (0.7.21) UNRELEASED; urgency=low
+configure-networkcard (0.7.21) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * depend on ceni, to ease up, the transition.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 07 Jan 2008 22:04:11 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 07 Jan 2008 22:09:49 +0100
 
 configure-networkcard (0.7.20) unstable; urgency=low
 

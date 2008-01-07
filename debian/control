@@ -9,7 +9,7 @@ Vcs-Browser: http://svn.berlios.de/wsvn/fullstory/configure-networkcard/trunk/
 
 Package: configure-networkcard
 Architecture: all
-Depends: ethtool, gawk, wireless-tools, dialog, pump, ssft, gettext
+Depends: ethtool, gawk, wireless-tools, dialog, pump, ssft, gettext, ceni
 Recommends: zenity, menu
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
