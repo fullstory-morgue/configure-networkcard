@@ -12,4 +12,4 @@ Name[pt]=Configuração da placa de rede
 Name[es]=Configuração da placa de rede
 
 Type=Application
-Categories=sidux;Net
+Categories=Network;

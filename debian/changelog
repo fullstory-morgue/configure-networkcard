@@ -1,8 +1,12 @@
-configure-networkcard (0.7.20) UNRELEASED; urgency=low
+configure-networkcard (0.7.20) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * no longer installer XDG and debian menu entries, configure-networkcard is
+    being deprectaed in favour of Ceni.
+  * switch from custom su-me to generic su-to-root, adapt dependencies and
+    menu files accordingly.
+  * move desktop file into standard XDG hierarchy.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Wed, 19 Dec 2007 11:12:41 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 07 Jan 2008 21:56:50 +0100
 
 configure-networkcard (0.7.19) unstable; urgency=low
 

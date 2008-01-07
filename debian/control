@@ -9,8 +9,8 @@ Vcs-Browser: http://svn.berlios.de/wsvn/fullstory/configure-networkcard/trunk/
 
 Package: configure-networkcard
 Architecture: all
-Depends: ethtool, gawk, wireless-tools, dialog, pump, su-me (>= 0.2), sidux-xdg, ssft, gettext
-Recommends: zenity
+Depends: ethtool, gawk, wireless-tools, dialog, pump, ssft, gettext
+Recommends: zenity, menu
 Description: network configuration script
  Minimalistic ncurses/dialog-based network card configuration script for 
  sidux.
