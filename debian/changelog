@@ -1,8 +1,10 @@
-configure-networkcard (0.7.23) UNRELEASED; urgency=low
+configure-networkcard (0.7.23) ORPHANED; urgency=low
 
   * NOT RELEASED YET
+  * ORPHAN PACKAGE, ceni replaces it.
+  * update to debhelper compat 6.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 Jan 2008 12:32:44 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 18 Jan 2008 23:11:31 +0100
 
 configure-networkcard (0.7.22) unstable; urgency=low
 
